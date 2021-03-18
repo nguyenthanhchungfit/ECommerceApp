@@ -1,0 +1,30 @@
+plugins {
+	id 'org.springframework.boot' version '2.4.3'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'com.ecommerce.app'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	 // central maven
+    implementation (
+            'org.springframework.boot:spring-boot-starter-web',
+            'org.springframework.boot:spring-boot-devtools'
+        //            'com.google.cloud.bigtable:bigtable-hbase:1.5.0'
+    )
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.14.0'
+    implementation group: 'org.ini4j', name: 'ini4j', version: '0.5.4'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+	useJUnitPlatform()
+}
