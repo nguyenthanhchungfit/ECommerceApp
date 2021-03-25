@@ -16,13 +16,20 @@ dependencies {
 	 // central maven
     implementation (
             'org.springframework.boot:spring-boot-starter-web',
-            'org.springframework.boot:spring-boot-devtools'
+            'org.springframework.boot:spring-boot-devtools',
+            'org.springframework.boot:spring-boot-starter-data-jpa'
         //            'com.google.cloud.bigtable:bigtable-hbase:1.5.0'
     )
     implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.14.0'
     implementation group: 'org.ini4j', name: 'ini4j', version: '0.5.4'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'mysql:mysql-connector-java:5.1.47'
+    implementation 'org.springframework.data:spring-data-redis:2.4.5'
+    implementation 'org.springframework.data:spring-data-neo4j:6.0.5'
+    implementation 'org.springframework.data:spring-data-mongodb:3.1.5'
+    implementation 'com.querydsl:querydsl-mongodb:4.4.0'
+    compileOnly 'org.projectlombok:lombok:1.18.4'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 test {
