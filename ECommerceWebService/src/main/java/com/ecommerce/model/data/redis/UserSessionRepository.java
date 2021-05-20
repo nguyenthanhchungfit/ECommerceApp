@@ -3,15 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ecommerce.model;
+package com.ecommerce.model.data.redis;
 
-import com.ecommerce.model.data.redis.UserSession;
-import com.ecommerce.model.data.mongodb.User;
+import org.springframework.data.repository.CrudRepository;
 
 /**
  *
  * @author chungnt
  */
-public class AuthModel {
-
+public interface UserSessionRepository extends CrudRepository<UserSession, String> {
+    
 }

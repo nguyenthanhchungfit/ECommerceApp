@@ -5,7 +5,6 @@
  */
 package com.ecommerce.controllers;
 
-import com.ecommerce.entities.AuthResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,14 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthController {
 
-    @GetMapping("/api/auth/login")
-    public AuthResult login() {
-        return null;
-    }
-
-    @GetMapping("/api/auth/logout")
-    public AuthResult logout() {
-
-        return null;
-    }
+//    @GetMapping("/api/auth/login")
+//    public AuthResult login() {
+//        return null;
+//    }
+//
+//    @GetMapping("/api/auth/logout")
+//    public AuthResult logout() {
+//
+//        return null;
+//    }
 }
