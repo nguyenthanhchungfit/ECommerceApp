@@ -5,61 +5,96 @@
  */
 package com.ecommerce.model.data.mongodb;
 
-import java.util.List;
-import javax.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.util.Date;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-/**
- *
- * @author chungnt
- */
-@Entity
-@Getter
-@Setter
-@AllArgsConstructor
+@Document(collection = "user")
 public class User {
 
     @Id
-    private String id;
+    ObjectId _id;
 
+    @Field(value = "id")
+    private int id;
+
+    @Field(value = "name")
     private String name;
-    private String phoneNumber;
+
+    @Field(value = "email")
     private String email;
-    private boolean gender;
-    private String dob;
-    private String address;
-    private List<ReceivedAddress> receivedAddresses;
 
-    public User() {
+    @Field(value = "date_of_birth")
+    private Date dateOfBirth;
+
+    @Field(value = "account")
+    private String account;
+
+    @Field(value = "password")
+    private String password;
+
+    public User(int id, String name, String email, Date dateOfBirth, String account, String password) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.dateOfBirth = dateOfBirth;
+        this.account = account;
+        this.password = password;
     }
 
-    public User(String name, String phoneNumber, String email, boolean gender, String dob, String address) {
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.gender = gender;
-        this.dob = dob;
-        this.address = address;
+    public int getId() {
+        return id;
     }
 
-    public User(String name, String phoneNumber, String email, boolean gender, String dob, String address, List<ReceivedAddress> receivedAddresses) {
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
         this.name = name;
-        this.phoneNumber = phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
         this.email = email;
-        this.gender = gender;
-        this.dob = dob;
-        this.address = address;
-        this.receivedAddresses = receivedAddresses;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", name=" + name + ", phoneNumber=" + phoneNumber + ", email=" + email + ", gender=" + gender + ", dob=" + dob + ", address=" + address + ", receivedAddresses=" + receivedAddresses + '}';
+        return "User{" + "id=" + id + ", name=" + name + ", email=" + email + ", dateOfBirth=" + dateOfBirth + ", account=" + account + ", password=" + password + '}';
     }
-    
-    
+
 }
