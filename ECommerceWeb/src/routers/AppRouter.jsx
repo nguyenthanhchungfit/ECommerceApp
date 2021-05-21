@@ -31,6 +31,10 @@ const AppRouter = () => (
           exact
           path={ROUTES.ACCOUNT_EDIT}
         />
+        <ClientRoute
+          component={view.CheckOut}
+          path={ROUTES.CHECKOUT}
+        />
       </Switch>
     </>
   </Router>

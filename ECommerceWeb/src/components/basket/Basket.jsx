@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { BasketItem, BasketToggle } from "components/basket";
 import { Boundary, Modal } from "components/common";
-import { SIGNIN, CHECKOUT_STEP_1 } from "constants/routes";
+import { SIGNIN, CHECKOUT } from "constants/routes";
 import { calculateTotal, displayMoney } from "helpers/utils";
 import { useModal } from "hooks";
 import React from "react";
@@ -22,7 +22,7 @@ const Basket = () => {
   const onCheckOut = () => {
     if (basket.length !== 0 && user) {
       document.body.classList.remove("is-basket-open");
-      history.push(CHECKOUT_STEP_1);
+      history.push(CHECKOUT);
     } else {
       onOpenModal();
     }
