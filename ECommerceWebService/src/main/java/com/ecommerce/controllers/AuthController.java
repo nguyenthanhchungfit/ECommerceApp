@@ -5,62 +5,96 @@
  */
 package com.ecommerce.controllers;
 
-import com.ecommerce.model.data.mongodb.User;
-import com.ecommerce.repository.mongodb.UserRepositoryCustom;
-import com.ecommerce.repository.mongodb.UserRespository;
-import java.util.List;
+import com.ecommerce.common.ErrorDefinition;
+import com.ecommerce.entities.AuthResult;
+import com.ecommerce.entities.RestResponseEntity;
+import com.ecommerce.model.data.mongodb.entity.Account;
+import com.ecommerce.model.data.mongodb.repository.AccountRepository;
+import com.ecommerce.model.data.redis.UserSession;
+import com.ecommerce.model.data.redis.UserSessionRepository;
+import java.util.concurrent.TimeUnit;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.util.DigestUtils;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  * @author chungnt
  */
-@CrossOrigin
 @RestController
 public class AuthController {
 
     @Autowired
-    private UserRepositoryCustom userRepositoryCustom;
+    private UserSessionRepository sessionRepo;
 
     @Autowired
-    private UserRespository userRepository;
+    private AccountRepository accountRepo;
 
-    @RequestMapping("/user/insert")
-    public String insertUser() {
+    private static final long EXPIRED_TIME = TimeUnit.DAYS.toMillis(7);// 7 days
+    private static final String ECOM_SESSION_KEY = "ecom-session";
 
-        int id = this.userRepositoryCustom.getMaxUserId() + 1;
-        return id + "";
+    @PostMapping("/api/login")
+    public RestResponseEntity doLogin(HttpServletResponse response, @RequestParam(name = "username") String userName,
+        @RequestParam(name = "password") String password) {
+        int error = ErrorDefinition.ERR_SUCCESS;
+        Object data = null;
+        if (StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password)) {
+            String md5Hex = DigestUtils.md5DigestAsHex(password.getBytes());
+            Account account = accountRepo.getAccountByUserName(userName);
+            if (account != null && md5Hex.equals(account.getPassword())) {
+                long currentTime = System.currentTimeMillis();
+                long expiredTime = currentTime + EXPIRED_TIME;
+                UserSession us = new UserSession(currentTime, expiredTime, account.getUserId());
+                UserSession retUs = sessionRepo.save(us);
+                if (retUs != null) {
+                    String sessionId = retUs.getId();
+                    Cookie cookie = _createCookie(ECOM_SESSION_KEY, sessionId, (int) (EXPIRED_TIME / 1000));
+                    response.addCookie(cookie);
+                } else {
+                    error = ErrorDefinition.ERR_CREATE_SESSION_FAILED;
+                }
+
+            } else {
+                error = ErrorDefinition.ERR_WRONG_AUTH;
+            }
+        } else {
+            error = ErrorDefinition.ERR_INVALID_PARAM;
+        }
+        RestResponseEntity resp = new RestResponseEntity(error, data);
+        return resp;
     }
 
-    @ResponseBody
-    @RequestMapping("/users")
-    public String getAllUsers() {
-
-        List<User> users = this.userRepository.findAll();
-
-        String html = "";
-        for (User emp : users) {
-            html += emp + "<br>";
+    @GetMapping("/api/logout")
+    public RestResponseEntity doLogout(@CookieValue(value = ECOM_SESSION_KEY) String sessionId,
+        HttpServletResponse response) {
+        int error = ErrorDefinition.ERR_SUCCESS;
+        Object data = null;
+        if (StringUtils.isNotBlank(sessionId)) {
+            sessionRepo.deleteById(sessionId);
         }
-
-        return html;
+        Cookie cookie = _createCookie(ECOM_SESSION_KEY, null, 0);
+        response.addCookie(cookie);
+        RestResponseEntity resp = new RestResponseEntity(error, data);
+        return resp;
     }
 
-    @RequestMapping("/user")
-    public User getUserById(@RequestParam(required = false) String id, @RequestParam(required = false) String email, @RequestParam(required = false) String password) {
-
-        if (id != null) {
-            return this.userRepository.findById(id);
-        }
-        if (email != null && password != null) {
-            return this.userRepository.findByEmailAndPassword(email, password);
-        }
-
+    @PostMapping("/api/register")
+    public RestResponseEntity doRegister(@RequestParam(name = "account") String account,
+        @RequestParam(name = "password") String password) {
         return null;
+    }
+
+    private Cookie _createCookie(String key, String sessionId, int maxAgeInSec) {
+        Cookie cookie = new Cookie(key, sessionId);
+        cookie.setMaxAge(maxAgeInSec);
+
+        return cookie;
     }
 }

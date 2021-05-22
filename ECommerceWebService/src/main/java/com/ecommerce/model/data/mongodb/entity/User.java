@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.ecommerce.model.data.mongodb;
+package com.ecommerce.model.data.mongodb.entity;
 
 import java.util.Date;
 import org.bson.types.ObjectId;

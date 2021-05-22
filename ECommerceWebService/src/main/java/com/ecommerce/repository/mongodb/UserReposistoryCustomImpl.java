@@ -1,6 +1,6 @@
 package com.ecommerce.repository.mongodb;
 
-import com.ecommerce.model.data.mongodb.User;
+import com.ecommerce.model.data.mongodb.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
