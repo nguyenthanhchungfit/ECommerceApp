@@ -16,5 +16,6 @@ public class ErrorDefinition {
     public static final int ERR_ACCOUNT_NOT_EXIST = -1001;
     public static final int ERR_WRONG_AUTH = -1002;
     public static final int ERR_CREATE_SESSION_FAILED = -1003;
+    public static final int ERR_NO_SESSION = -1004;
 
 }

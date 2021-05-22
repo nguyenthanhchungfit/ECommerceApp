@@ -5,6 +5,7 @@
  */
 package com.ecommerce.controllers;
 
+import com.ecommerce.common.Constant;
 import com.ecommerce.common.ErrorDefinition;
 import com.ecommerce.entities.AuthResult;
 import com.ecommerce.entities.RestResponseEntity;
@@ -38,7 +39,6 @@ public class AuthController {
     private AccountRepository accountRepo;
 
     private static final long EXPIRED_TIME = TimeUnit.DAYS.toMillis(7);// 7 days
-    private static final String ECOM_SESSION_KEY = "ecom-session";
 
     @PostMapping("/api/login")
     public RestResponseEntity doLogin(HttpServletResponse response, @RequestParam(name = "username") String userName,
@@ -55,7 +55,7 @@ public class AuthController {
                 UserSession retUs = sessionRepo.save(us);
                 if (retUs != null) {
                     String sessionId = retUs.getId();
-                    Cookie cookie = _createCookie(ECOM_SESSION_KEY, sessionId, (int) (EXPIRED_TIME / 1000));
+                    Cookie cookie = _createCookie(Constant.AUTH_ECOM_SESSION_KEY, sessionId, (int) (EXPIRED_TIME / 1000));
                     response.addCookie(cookie);
                 } else {
                     error = ErrorDefinition.ERR_CREATE_SESSION_FAILED;
@@ -72,14 +72,14 @@ public class AuthController {
     }
 
     @GetMapping("/api/logout")
-    public RestResponseEntity doLogout(@CookieValue(value = ECOM_SESSION_KEY) String sessionId,
+    public RestResponseEntity doLogout(@CookieValue(value = Constant.AUTH_ECOM_SESSION_KEY) String sessionId,
         HttpServletResponse response) {
         int error = ErrorDefinition.ERR_SUCCESS;
         Object data = null;
         if (StringUtils.isNotBlank(sessionId)) {
             sessionRepo.deleteById(sessionId);
         }
-        Cookie cookie = _createCookie(ECOM_SESSION_KEY, null, 0);
+        Cookie cookie = _createCookie(Constant.AUTH_ECOM_SESSION_KEY, null, 0);
         response.addCookie(cookie);
         RestResponseEntity resp = new RestResponseEntity(error, data);
         return resp;
