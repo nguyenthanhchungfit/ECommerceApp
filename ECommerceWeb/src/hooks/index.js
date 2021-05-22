@@ -7,3 +7,5 @@ export { default as useScrollTop } from "./useScrollTop";
 export { default as useQueryProducts } from "./useQueryProducts";
 export { default as useQueryProductDetail } from "./useQueryProductDetail";
 export { default as useQueryUser } from "./useQueryUser";
+export { default as useMutationCheckout } from "./useMutationsCheckout";
+export { default as useQueryOrderHistory } from "./useQueryOrderHistory";
