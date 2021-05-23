@@ -18,13 +18,13 @@ import org.apache.logging.log4j.Logger;
  * @author ngoclt2
  */
 public class MySQLAdapter {
-
+    
     private static final Class CLASS = MySQLAdapter.class;
     private static final Logger logger = LogManager.getLogger(CLASS);
     private static final MySQLClient MYSQL_CLIENT;
-
+    
     private static final int MAX_PRODUCT_PER_PAGE = 50;
-
+    
     private static final String COL_PRODUCT_ID = "product_id";
     private static final String COL_PRODUCT_NAME = "product_name";
     private static final String COL_PRODUCT_CATEGORY = "category_id";
@@ -33,27 +33,27 @@ public class MySQLAdapter {
     private static final String COL_PRODUCT_PRICE = "price";
     private static final String COL_PRODUCT_THUMB_URL = "thumb_url";
     private static final String COL_PRODUCT_QUANTITY = "remain_quantity";
-
+    
     private static final String COL_ORDER_ID = "invoice_id";
     private static final String COL_ORDER_USER_ID = "user_id";
     private static final String COL_ORDER_PHONE = "phone";
     private static final String COL_ORDER_ADDRESS = "address";
     private static final String COL_ORDER_TOTAL_PRICE = "total_price";
     private static final String COL_ORDER_CREATE_TIME = "create_time";
-
+    
     private static final String COL_ORDER_DETAIL_QUANTITY = "quantity";
     private static final String COL_ORDER_DETAIL_PRICE = "price";
-
+    
     public static MySQLAdapter INSTANCE = new MySQLAdapter();
-
+    
     static {
         MYSQL_CLIENT = new MySQLClient();
     }
-
+    
     public void init() {
         doPingMySQL();
     }
-
+    
     protected void doPingMySQL() {
         Connection conn = null;
         try {
@@ -67,13 +67,13 @@ public class MySQLAdapter {
             MYSQL_CLIENT.releaseConnection(conn);
         }
     }
-
+    
     public boolean insertProduct(long id, String name, int categoryId, String brandName, String shortDescription, long price, String thumbUrl, int remainQuantity) {
         Connection conn = null;
         try {
             conn = MYSQL_CLIENT.getConnection();
             String sqlQuery = "insert into Product (product_id,product_name, category_id, brand_name, short_description, price, thumb_url, remain_quantity) values (?,?,?,?,?,?,?,?)";
-
+            
             PreparedStatement prepareStatement = conn.prepareStatement(sqlQuery);
             prepareStatement.setLong(1, id);
             prepareStatement.setString(2, name);
@@ -92,15 +92,17 @@ public class MySQLAdapter {
         }
         return false;
     }
-
-    public List<Product> getAllProduct() {
+    
+    public List<Product> getAllProduct(int page) {
         Connection conn = null;
         try {
             conn = MYSQL_CLIENT.getConnection();
-            String sqlQuery = "select * from Product";
-
+            String sqlQuery = "select * from Product limit ?,?";
+            
             PreparedStatement prepareStatement = conn.prepareStatement(sqlQuery);
-
+            prepareStatement.setInt(1, page);
+            prepareStatement.setInt(2, MAX_PRODUCT_PER_PAGE);
+            
             ResultSet resultSet = prepareStatement.executeQuery();
             List<Product> listVerificationInfo = extractListProduct(resultSet);
             return listVerificationInfo;
@@ -111,15 +113,36 @@ public class MySQLAdapter {
         }
         return null;
     }
-
+    
+    public List<Product> getListProductsByCategoryId(int categoryId, int page) {
+        Connection conn = null;
+        try {
+            conn = MYSQL_CLIENT.getConnection();
+            String sqlQuery = "select * from Product where category_id=? limit ?,?";
+            
+            PreparedStatement prepareStatement = conn.prepareStatement(sqlQuery);
+            prepareStatement.setInt(1, categoryId);
+            prepareStatement.setInt(2, page);
+            prepareStatement.setInt(3, MAX_PRODUCT_PER_PAGE);
+            ResultSet resultSet = prepareStatement.executeQuery();
+            List<Product> listVerificationInfo = extractListProduct(resultSet);
+            return listVerificationInfo;
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            MYSQL_CLIENT.releaseConnection(conn);
+        }
+        return null;
+    }
+    
     public Product getProduct(int category, int productId) {
         Connection conn = null;
         try {
             conn = MYSQL_CLIENT.getConnection();
             String sqlQuery = "select * from Product where category_id=" + category + " and product_id=" + productId;
-
+            
             PreparedStatement prepareStatement = conn.prepareStatement(sqlQuery);
-
+            
             ResultSet resultSet = prepareStatement.executeQuery();
             List<Product> listProduct = extractListProduct(resultSet);
             if (listProduct != null && !listProduct.isEmpty()) {
@@ -132,7 +155,28 @@ public class MySQLAdapter {
         }
         return null;
     }
-
+    
+    public Product getProductById(long productId) {
+        Connection conn = null;
+        try {
+            conn = MYSQL_CLIENT.getConnection();
+            String sqlQuery = "select * from Product where product_id=" + productId;
+            
+            PreparedStatement prepareStatement = conn.prepareStatement(sqlQuery);
+            
+            ResultSet resultSet = prepareStatement.executeQuery();
+            List<Product> listProduct = extractListProduct(resultSet);
+            if (listProduct != null && !listProduct.isEmpty()) {
+                return listProduct.get(0);
+            }
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            MYSQL_CLIENT.releaseConnection(conn);
+        }
+        return null;
+    }
+    
     public int findProductCateId(String type) {
         if (type == null || type.isEmpty()) {
             return 0;
@@ -140,11 +184,11 @@ public class MySQLAdapter {
         switch (type) {
             case "laptop":
                 return 8095;
-
+            
         }
         return 0;
     }
-
+    
     public List<Product> extractListProduct(ResultSet resultSet) {
         List<Product> ret = new ArrayList<>();
         try {
@@ -166,7 +210,7 @@ public class MySQLAdapter {
         }
         return ret;
     }
-
+    
     public List<OrderItem> extractListOrder(ResultSet resultSet) {
         List<OrderItem> ret = new ArrayList<>();
         try {
@@ -185,13 +229,13 @@ public class MySQLAdapter {
         }
         return ret;
     }
-
+    
     public boolean insertOrder(int orderId, int userId, int subTotal) {
         Connection conn = null;
         try {
             conn = MYSQL_CLIENT.getConnection();
             String sqlQuery = "insert into Invoice (invoice_id,user_id,phone,address,total_price,create_time) values (?,?,?,?,?,?)";
-
+            
             PreparedStatement prepareStatement = conn.prepareStatement(sqlQuery);
             prepareStatement.setLong(1, orderId);
             prepareStatement.setLong(2, userId);
@@ -208,13 +252,13 @@ public class MySQLAdapter {
         }
         return false;
     }
-
+    
     public boolean insertOrderDetail(int orderId, int productId, int category, int quantity, int price) {
         Connection conn = null;
         try {
             conn = MYSQL_CLIENT.getConnection();
             String sqlQuery = "insert into Invoice_Detail (invoice_id,product_id,category_id,quantity,price) values (?,?,?,?,?)";
-
+            
             PreparedStatement prepareStatement = conn.prepareStatement(sqlQuery);
             prepareStatement.setInt(1, orderId);
             prepareStatement.setInt(2, productId);
@@ -230,13 +274,13 @@ public class MySQLAdapter {
         }
         return false;
     }
-
+    
     public int countOrder() {
         Connection conn = null;
         try {
             conn = MYSQL_CLIENT.getConnection();
             String sqlQuery = "select count(*) as count from Invoice";
-
+            
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery(sqlQuery);
             if (rs != null) {
@@ -251,15 +295,15 @@ public class MySQLAdapter {
         }
         return -1;
     }
-
+    
     public List<Integer> getAllOrderIdByUserId(int userId) {
         Connection conn = null;
         try {
             conn = MYSQL_CLIENT.getConnection();
             String sqlQuery = "select invoice_id from Invoice where user_id=" + userId;
-
+            
             PreparedStatement prepareStatement = conn.prepareStatement(sqlQuery);
-
+            
             ResultSet resultSet = prepareStatement.executeQuery();
             if (resultSet != null) {
                 List<Integer> orderIds = new ArrayList<>();
@@ -271,7 +315,7 @@ public class MySQLAdapter {
                 }
                 return orderIds;
             }
-
+            
         } catch (SQLException e) {
             logger.error(e);
         } finally {
@@ -279,15 +323,15 @@ public class MySQLAdapter {
         }
         return null;
     }
-
+    
     public List<OrderItem> getAllOrderItemByOrderId(int orderId) {
         Connection conn = null;
         try {
             conn = MYSQL_CLIENT.getConnection();
             String sqlQuery = "select * from Invoice_Detail where invoice_id=" + orderId;
-
+            
             PreparedStatement prepareStatement = conn.prepareStatement(sqlQuery);
-
+            
             ResultSet resultSet = prepareStatement.executeQuery();
             List<OrderItem> orderItems = extractListOrder(resultSet);
             return orderItems;
@@ -298,7 +342,7 @@ public class MySQLAdapter {
         }
         return null;
     }
-
+    
     public static void main(String[] args) {
         INSTANCE.doPingMySQL();
         int userid = 1111;

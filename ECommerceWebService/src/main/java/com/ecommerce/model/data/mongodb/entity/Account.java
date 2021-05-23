@@ -23,16 +23,16 @@ public class Account {
     @Id
     private String id;
 
-    private String username;
+    private String userName;
     private String password;
     private String userId;
 
     public Account() {
     }
 
-    public Account(String id, String username, String password, String userId) {
+    public Account(String id, String userName, String password, String userId) {
         this.id = id;
-        this.username = username;
+        this.userName = userName;
         this.password = password;
         this.userId = userId;
     }

@@ -3,7 +3,7 @@ import axios from "axios";
 
 const useQueryProducts = (category) =>
   useQuery(["product", category], async () => {
-    return axios.get(`http://localhost:9000/products?category=${category}`);
+    return axios.get(`http://localhost:9000/api/products?category=${category}`);
   });
 
 export default useQueryProducts;
