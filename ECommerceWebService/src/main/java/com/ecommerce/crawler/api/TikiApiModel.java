@@ -34,6 +34,15 @@ public class TikiApiModel {
         return null;
     }
 
+    public List<TikiProduct> getListTikiProductByUrl(String url) {
+        RestTemplate restTemplate = new RestTemplate();
+        TikiProductResponse response = restTemplate.getForObject(url, TikiProductResponse.class);
+        if (response != null && response.getData() != null) {
+            return response.getData();
+        }
+        return null;
+    }
+
     public void insertLaptop() {
 
         List<TikiProduct> listTikiProduct = INSTANCE.getListTikiProduct(CATEGORY_LAPTOP);

@@ -14,6 +14,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,6 +28,7 @@ public class RecommendProductController {
     @Autowired
     private UserSessionRepository sessionRepo;
 
+    @CrossOrigin
     @GetMapping("/api/recommend/product")
     public RestResponseEntity getRecommendProducts(@CookieValue(value = Constant.AUTH_ECOM_SESSION_KEY) String sessionId) {
         int error = ErrorDefinition.ERR_SUCCESS;

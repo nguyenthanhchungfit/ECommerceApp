@@ -11,4 +11,5 @@ package com.ecommerce.common;
  */
 public class Constant {
     public static final String AUTH_ECOM_SESSION_KEY = "ecom-session";
+    public static final int NITEMS_PER_PAGE = 50;
 }

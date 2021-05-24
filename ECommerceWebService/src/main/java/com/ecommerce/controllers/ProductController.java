@@ -1,6 +1,8 @@
 package com.ecommerce.controllers;
 
+import com.ecommerce.common.Constant;
 import com.ecommerce.common.ErrorDefinition;
+import com.ecommerce.entities.ListProductResult;
 import com.ecommerce.entities.RestResponseEntity;
 import com.ecommerce.model.data.mysql.Product;
 import com.ecommerce.repository.mysql.MySQLAdapter;
@@ -25,19 +27,22 @@ public class ProductController {
     @GetMapping(value = "/api/products")
     public RestResponseEntity getProductById(@RequestParam(name = "category", required = false) Integer categoryId,
         @RequestParam(name = "page", defaultValue = "0") int page) {
-
         if (page < 0) {
             page = 0;
         }
         int error = ErrorDefinition.ERR_SUCCESS;
         Object data = null;
         List<Product> listProduct = null;
+        int total = 0;
         if (categoryId != null) {
-            listProduct = MySQLAdapter.INSTANCE.getListProductsByCategoryId(categoryId, page);
+            total = MySQLAdapter.INSTANCE.getTotalOfProductsByCategoryId(categoryId);
+            listProduct = MySQLAdapter.INSTANCE.getListProductsByCategoryId(categoryId, page, Constant.NITEMS_PER_PAGE);
         } else {
-            listProduct = MySQLAdapter.INSTANCE.getAllProduct(page);
+            total = MySQLAdapter.INSTANCE.getTotalOfProducts();
+            listProduct = MySQLAdapter.INSTANCE.getAllProduct(page, Constant.NITEMS_PER_PAGE);
         }
-        data = listProduct;
+        boolean isMore = listProduct != null && listProduct.size() == Constant.NITEMS_PER_PAGE;
+        data = new ListProductResult(total, isMore, Constant.NITEMS_PER_PAGE, listProduct);
         return new RestResponseEntity(error, data);
     }
 
