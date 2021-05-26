@@ -13,6 +13,7 @@ export { default as CheckOut } from './checkout';
 // export { default as PageNotFound } from './error/PageNotFound';
 // export { default as FeaturedProducts } from './featured';
 export { default as Home } from './home';
+export { default as ProductList } from './product_list';
 // export { default as RecommendedProducts } from './recommended';
 export { default as Search } from './search';
 // export { default as Shop } from './shop';

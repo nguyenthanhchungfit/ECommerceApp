@@ -10,6 +10,7 @@ package com.ecommerce.common;
  * @author chungnt
  */
 public class Constant {
+
     public static final String AUTH_ECOM_SESSION_KEY = "ecom-session";
-    public static final int NITEMS_PER_PAGE = 50;
+    public static final int NITEMS_PER_PAGE = 20;
 }

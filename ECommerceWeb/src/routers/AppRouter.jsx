@@ -17,9 +17,9 @@ const AppRouter = () => (
       <Navigation />
       <Basket />
       <Switch>
-        <Route component={view.Search} exact path={ROUTES.SEARCH} />
         {/* <Route component={view.Home} exact path={ROUTES.HOME} /> */}
-        <Route component={view.Home} exact path={ROUTES.LAPTOP} />
+        <Route component={view.Search} exact path={ROUTES.SEARCH} />
+        <Route component={view.ProductList} exact path={ROUTES.LAPTOP} />
 
         <Route component={view.ViewProduct} path={ROUTES.VIEW_PRODUCT} />
         <PublicRoute component={view.SignUp} path={ROUTES.SIGNUP} />

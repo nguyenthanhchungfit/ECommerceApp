@@ -154,7 +154,7 @@ public class MySQLAdapter {
             String sqlQuery = "select * from Product limit ?,?";
 
             PreparedStatement prepareStatement = conn.prepareStatement(sqlQuery);
-            prepareStatement.setInt(1, page);
+            prepareStatement.setInt(1, (page - 1) * nItems);
             prepareStatement.setInt(2, nItems);
 
             ResultSet resultSet = prepareStatement.executeQuery();
@@ -194,7 +194,7 @@ public class MySQLAdapter {
 
             PreparedStatement prepareStatement = conn.prepareStatement(sqlQuery);
             prepareStatement.setInt(1, categoryId);
-            prepareStatement.setInt(2, page);
+            prepareStatement.setInt(2, (page - 1) * nItems);
             prepareStatement.setInt(3, nItems);
             ResultSet resultSet = prepareStatement.executeQuery();
             List<Product> listVerificationInfo = extractListProduct(resultSet);

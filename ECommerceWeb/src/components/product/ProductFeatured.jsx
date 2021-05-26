@@ -17,6 +17,7 @@ const ProductFeatured = ({ product }) => {
         <div className="product-display-img">
           {product.thumbUrl ? (
             <ImageLoader
+              alt=""
               className="product-card-img"
               src={product.thumbUrl}
             />

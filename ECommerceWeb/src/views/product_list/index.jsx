@@ -6,7 +6,7 @@ import { useDocumentTitle, useScrollTop, useQueryProducts } from "hooks";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const Home = () => {
+const ProductList = () => {
   const [state, setState] = useState({
     perPage: 20,
     currentPage: 1,
@@ -40,7 +40,7 @@ const Home = () => {
   useDocumentTitle("Ecommerce | Home");
   useScrollTop();
 
-  const { isLoading, data } = useQueryProducts(8095,state.currentPage);
+  const { isLoading, data } = useQueryProducts(8095, state.currentPage);
 
   useEffect(() => {
     if (!isLoading) {
@@ -59,14 +59,23 @@ const Home = () => {
     <main className="content">
       <div className="home">
         <div className="display">
-          <div className="display-header">
-            <h1>Featured Products</h1>
-            <Link to={FEATURED_PRODUCTS}>See All</Link>
-          </div>
           {isLoading ? (
             <MessageDisplay message={"Error"} buttonLabel="Try Again" />
           ) : (
             <>
+              <div className="display-header">
+                <h1>Category Name</h1>
+                <Pagination
+                  totalItemsCount={state.totalItemsCount}
+                  currentPage={state.currentPage}
+                  perPage={state.perPage}
+                  pagesToShow={3}
+                  onGoPage={goPage}
+                  onPrevPage={onPrev}
+                  onNextPage={onNext}
+                />
+              </div>
+
               <ProductShowcaseGrid
                 products={data.data.items}
                 skeletonCount={6}
@@ -79,4 +88,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default ProductList;

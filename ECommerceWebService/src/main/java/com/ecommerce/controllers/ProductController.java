@@ -6,10 +6,7 @@ import com.ecommerce.entities.ListProductResult;
 import com.ecommerce.entities.RestResponseEntity;
 import com.ecommerce.model.data.mysql.Product;
 import com.ecommerce.repository.mysql.MySQLAdapter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,9 +23,9 @@ public class ProductController {
     @CrossOrigin
     @GetMapping(value = "/api/products")
     public RestResponseEntity getProductById(@RequestParam(name = "category", required = false) Integer categoryId,
-        @RequestParam(name = "page", defaultValue = "0") int page) {
-        if (page < 0) {
-            page = 0;
+            @RequestParam(name = "page", defaultValue = "0") int page) {
+        if (page <= 0) {
+            page = 1;
         }
         int error = ErrorDefinition.ERR_SUCCESS;
         Object data = null;
