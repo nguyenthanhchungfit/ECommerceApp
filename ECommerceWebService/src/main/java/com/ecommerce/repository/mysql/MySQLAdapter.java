@@ -93,6 +93,30 @@ public class MySQLAdapter {
         return false;
     }
 
+    public int insertProduct(Product product) {
+        int ret = 0;
+        Connection conn = null;
+        try {
+            conn = MYSQL_CLIENT.getConnection();
+            String sqlQuery = "insert into Product (product_id,product_name, category_id, brand_name, short_description, price, thumb_url, remain_quantity) values (?,?,?,?,?,?,?,?)";
+            PreparedStatement pstm = conn.prepareStatement(sqlQuery);
+            pstm.setLong(1, product.getId());
+            pstm.setString(2, product.getName());
+            pstm.setLong(3, product.getCategory());
+            pstm.setString(4, product.getBrandName());
+            pstm.setString(5, product.getShortDescription());
+            pstm.setLong(6, product.getPrice());
+            pstm.setString(7, product.getThumbUrl());
+            pstm.setInt(8, product.getRemainQuantity());
+            ret = pstm.executeUpdate();
+        } catch (SQLException ex) {
+            logger.error(ex.getMessage(), ex);
+        } finally {
+            MYSQL_CLIENT.releaseConnection(conn);
+        }
+        return ret;
+    }
+
     public int[] insertMultiProducts(List<Product> products) {
         Connection conn = null;
         try {
