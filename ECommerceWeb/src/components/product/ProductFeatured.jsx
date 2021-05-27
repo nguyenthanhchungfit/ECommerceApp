@@ -6,9 +6,21 @@ import { useHistory } from 'react-router-dom';
 
 const ProductFeatured = ({ product }) => {
   const history = useHistory();
+
+  const categoryName = (category) =>{
+    if(category==8095){
+      return 'laptop-may-vi-tinh';
+    }else if(category==1789){
+      return 'dien-thoai-may-tinh-bang';
+    }else if(category==1882){
+      return 'dien-gia-dung'
+    }
+
+  }
+
   const onClickItem = () => {
     if (!product) return;
-    history.push(`${history.location.pathname}/${product.id}`);
+    history.push(`${categoryName(product.category)}/${product.id}`);
   };
 
   return (

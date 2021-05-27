@@ -58,6 +58,7 @@ const Navigation = () => {
         <li><NavLink activeClassName="navigation-menu-active" exact to={ROUTE.HOME}>Home</NavLink></li>
         <li><NavLink activeClassName="navigation-menu-active" to={ROUTE.LAPTOP}>Laptop</NavLink></li>
         <li><NavLink activeClassName="navigation-menu-active" to={ROUTE.PHONE}>Phones</NavLink></li>
+        <li><NavLink activeClassName="navigation-menu-active" to={ROUTE.ELECTRICAL}>Electrical</NavLink></li>
         <li><NavLink activeClassName="navigation-menu-active" to={ROUTE.RECOMMENDED_PRODUCTS}>Recommended</NavLink></li>
       </ul>
       <SearchBar />

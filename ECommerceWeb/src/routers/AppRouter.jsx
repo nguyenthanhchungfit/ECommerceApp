@@ -1,5 +1,6 @@
 import { createBrowserHistory } from "history";
 import { Navigation } from "components/common";
+import {ProductList} from 'components/product'
 import { Basket } from "components/basket";
 import { Route, Router, Switch } from "react-router-dom";
 import * as view from "views";
@@ -17,9 +18,17 @@ const AppRouter = () => (
       <Navigation />
       <Basket />
       <Switch>
-        {/* <Route component={view.Home} exact path={ROUTES.HOME} /> */}
+        <Route component={view.Home} exact path={ROUTES.HOME} />
         <Route component={view.Search} exact path={ROUTES.SEARCH} />
-        <Route component={view.ProductList} exact path={ROUTES.LAPTOP} />
+        <Route exact path={ROUTES.LAPTOP}>
+          <view.ProductList category={8095}></view.ProductList>
+        </Route>
+        <Route exact path={ROUTES.PHONE}>
+          <view.ProductList category={1789}></view.ProductList>
+        </Route>
+        <Route exact path={ROUTES.ELECTRICAL}>
+          <view.ProductList category={1882}></view.ProductList>
+        </Route>
 
         <Route component={view.ViewProduct} path={ROUTES.VIEW_PRODUCT} />
         <PublicRoute component={view.SignUp} path={ROUTES.SIGNUP} />
@@ -31,10 +40,7 @@ const AppRouter = () => (
           exact
           path={ROUTES.ACCOUNT_EDIT}
         />
-        <ClientRoute
-          component={view.CheckOut}
-          path={ROUTES.CHECKOUT}
-        />
+        <ClientRoute component={view.CheckOut} path={ROUTES.CHECKOUT} />
       </Switch>
     </>
   </Router>

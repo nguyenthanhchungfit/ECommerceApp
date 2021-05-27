@@ -1,6 +1,7 @@
 export const HOME = '/';
 export const LAPTOP = '/laptop-may-vi-tinh';
 export const PHONE = '/dien-thoai-may-tinh-bang';
+export const ELECTRICAL = "/dien-gia-dung";
 
 export const SHOP = '/shop';
 export const FEATURED_PRODUCTS = '/featured';

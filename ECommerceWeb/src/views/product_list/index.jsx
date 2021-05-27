@@ -6,7 +6,7 @@ import { useDocumentTitle, useScrollTop, useQueryProducts } from "hooks";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const ProductList = () => {
+const ProductList = ({category}) => {
   const [state, setState] = useState({
     perPage: 20,
     currentPage: 1,
@@ -40,7 +40,7 @@ const ProductList = () => {
   useDocumentTitle("Ecommerce | Home");
   useScrollTop();
 
-  const { isLoading, data } = useQueryProducts(8095, state.currentPage);
+  const { isLoading, data } = useQueryProducts(category, state.currentPage);
 
   useEffect(() => {
     if (!isLoading) {
