@@ -17,7 +17,7 @@ public interface UserRepositoy extends Neo4jRepository<NodeUser, Integer> {
 
     @Query("MATCH (u:User {id:$userId}), (p:Product {productId:$productId})\n"
         + "MERGE (u)-[r:VIEW]->(p)\n"
-        + "ON CREATE SET r.countViews = 1\n"
+        + "ON CREATE SET r.countViews = 1\n, r.id=$userId + '-'+ $productId\n"
         + "ON MATCH SET r.countViews = r.countViews + 1\n"
         + "RETURN u")
     public NodeUser viewProduct(@Param("userId") int userId, @Param("productId") long productId);
