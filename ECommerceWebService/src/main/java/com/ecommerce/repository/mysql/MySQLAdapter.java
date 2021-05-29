@@ -219,7 +219,7 @@ public class MySQLAdapter {
         try {
             conn = MYSQL_CLIENT.getConnection();
             String collectionStr = _buildCollection(productIds);
-            String sqlQuery = "select * from Product where product_id in " + collectionStr +" order by ratingAvg desc";
+            String sqlQuery = "select * from Product where product_id in " + collectionStr + " order by ratingAvg desc";
             System.out.println("********* sqlQuery: " + sqlQuery);
             PreparedStatement prepareStatement = conn.prepareStatement(sqlQuery);
             ResultSet resultSet = prepareStatement.executeQuery();
@@ -287,10 +287,10 @@ public class MySQLAdapter {
         Connection conn = null;
         try {
             conn = MYSQL_CLIENT.getConnection();
-            String sqlQuery = "select * from Product where product_name like %?% limit ?,?";
+            String sqlQuery = "select * from Product where product_name like ? limit ?,?";
 
             PreparedStatement pstm = conn.prepareStatement(sqlQuery);
-            pstm.setString(1, ssearch);
+            pstm.setString(1, "%" + ssearch + "%");
             pstm.setInt(2, page);
             pstm.setInt(3, nItems);
 
