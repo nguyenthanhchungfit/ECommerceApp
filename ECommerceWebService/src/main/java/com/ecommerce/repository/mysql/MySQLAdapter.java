@@ -214,6 +214,35 @@ public class MySQLAdapter {
         return null;
     }
 
+    public List<Product> multiGetProducts(List<Long> productIds) {
+        Connection conn = null;
+        try {
+            conn = MYSQL_CLIENT.getConnection();
+            String collectionStr = _buildCollection(productIds);
+            String sqlQuery = "select * from Product where product_id in " + collectionStr +" order by ratingAvg desc";
+            System.out.println("********* sqlQuery: " + sqlQuery);
+            PreparedStatement prepareStatement = conn.prepareStatement(sqlQuery);
+            ResultSet resultSet = prepareStatement.executeQuery();
+            List<Product> listVerificationInfo = extractListProduct(resultSet);
+            return listVerificationInfo;
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            MYSQL_CLIENT.releaseConnection(conn);
+        }
+        return null;
+    }
+
+    private String _buildCollection(List<Long> productIds) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("(").append(productIds.get(0));
+        for (int i = 1; i < productIds.size(); i++) {
+            sb.append(", ").append(productIds.get(i));
+        }
+        sb.append(")");
+        return sb.toString();
+    }
+
     public List<ProductCategory> getListProductCategory(int page, int nItems) {
         Connection conn = null;
         try {

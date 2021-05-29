@@ -9,7 +9,6 @@ import com.ecommerce.repository.mysql.MySQLAdapter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -42,9 +41,6 @@ public class ECommerceWebServiceApplication {
     private com.ecommerce.model.data.neo4j.ProductRepository productNeo4jRepo;
 
     @Autowired
-    private com.ecommerce.model.data.neo4j.ViewRelationshipRepository viewRelationNeo4jRepo;
-
-    @Autowired
     private com.ecommerce.model.data.redis.UserSessionRepository sessionRepo;
 
     public static void main(String[] args) {
@@ -56,8 +52,7 @@ public class ECommerceWebServiceApplication {
         return args -> {
 //            _mockInsertProductNeo4j();
 //            _mockNeo4j();
-            System.out.println("get: " + userNeo4jRepo.viewProduct(2, 71198812));
-
+//            System.out.println("firstUser: " + firstUser);
 //            System.out.println("Let's inspect the beans provided by Spring Boot:");
 //            String[] beanNames = ctx.getBeanDefinitionNames();
 //            Arrays.sort(beanNames);
@@ -102,33 +97,35 @@ public class ECommerceWebServiceApplication {
         NodeBrand brandLenovo = new NodeBrand("Lenovo");
         NodeBrand brandSamsung = new NodeBrand("Samsung");
         NodeBrand brandOppo = new NodeBrand("Oppo");
+        NodeBrand brandOukitel = new NodeBrand("Oukitel");
+        NodeBrand brandOEM = new NodeBrand("OEM");
 
-        NodeProduct nodeProduct_85137414 = new NodeProduct(85137414, 5, nodeCateMobile, brandXiaomi);
-        NodeProduct nodeProduct_16550144 = new NodeProduct(16550144, 5, nodeCateElectrical, brandDeerma);
-        Set<NodeProduct> boughtProductsUser1 = new HashSet<>(Arrays.asList(nodeProduct_85137414, nodeProduct_16550144));
+        NodeProduct nodeProduct_65492829 = new NodeProduct(65492829, 5, nodeCateMobile, brandOukitel);
+        NodeProduct nodeProduct_95994081 = new NodeProduct(95994081, 0, nodeCateElectrical, brandOEM);
+        Set<NodeProduct> boughtProductsUser1 = new HashSet<>(Arrays.asList(nodeProduct_65492829, nodeProduct_95994081));
 
-        NodeProduct nodeProduct_82482203 = new NodeProduct(82482203, 5, nodeCateLatop, brandAssus);
-        ViewRelationship viewed_user1_82482203 = new ViewRelationship("1-82482203", 2, nodeProduct_82482203);
+        NodeProduct nodeProduct_92072034 = new NodeProduct(92072034, 5, nodeCateLatop, brandLenovo);
+        ViewRelationship viewed_user1_92072034 = new ViewRelationship("1-92072034", 2, nodeProduct_92072034);
 
-        NodeProduct nodeProduct_72761522 = new NodeProduct(72761522, 4.8, nodeCateLatop, brandLenovo);
-        ViewRelationship viewed_user1_72761522 = new ViewRelationship("1-72761522", 1, nodeProduct_72761522);
+        NodeProduct nodeProduct_92330966 = new NodeProduct(92330966, 5, nodeCateLatop, brandLenovo);
+        ViewRelationship viewed_user1_92330966 = new ViewRelationship("1-92330966", 1, nodeProduct_92330966);
 
-        NodeProduct nodeProduct_75321775 = new NodeProduct(75321775, 5, nodeCateMobile, brandLenovo);
-        ViewRelationship viewed_user1_75321775 = new ViewRelationship("1-75321775", 1, nodeProduct_75321775);
+        NodeProduct nodeProduct_88100602 = new NodeProduct(88100602, 5, nodeCateMobile, brandXiaomi);
+        ViewRelationship viewed_user1_88100602 = new ViewRelationship("1-88100602", 1, nodeProduct_88100602);
 
-        Set<ViewRelationship> viewedRelationShipUser1 = new HashSet<>(Arrays.asList(viewed_user1_82482203, viewed_user1_72761522, viewed_user1_75321775));
+        Set<ViewRelationship> viewedRelationShipUser1 = new HashSet<>(Arrays.asList(viewed_user1_92072034, viewed_user1_92330966, viewed_user1_88100602));
 
         NodeUser user01 = new NodeUser(1, "chungnt", boughtProductsUser1, viewedRelationShipUser1);
         userNeo4jRepo.save(user01);
 
-        NodeProduct nodeProduct_74489817 = new NodeProduct(74489817, 5, nodeCateMobile, brandOppo);
-        ViewRelationship viewed_user2_74489817 = new ViewRelationship("2-74489817", 3, nodeProduct_74489817);
-
-        NodeProduct nodeProduct_83492084 = new NodeProduct(83492084, 5, nodeCateMobile, brandSamsung);
-        ViewRelationship viewed_user2_83492084 = new ViewRelationship("2-83492084", 1, nodeProduct_83492084);
-        Set<ViewRelationship> viewedRelationShipUser2 = new HashSet<>(Arrays.asList(viewed_user2_74489817, viewed_user2_83492084));
-
-        NodeUser user02 = new NodeUser(2, "ngoclt2", false, viewedRelationShipUser2);
-        userNeo4jRepo.save(user02);
+//        NodeProduct nodeProduct_74489817 = new NodeProduct(74489817, 5, nodeCateMobile, brandOppo);
+//        ViewRelationship viewed_user2_74489817 = new ViewRelationship("2-74489817", 3, nodeProduct_74489817);
+//
+//        NodeProduct nodeProduct_83492084 = new NodeProduct(83492084, 5, nodeCateMobile, brandSamsung);
+//        ViewRelationship viewed_user2_83492084 = new ViewRelationship("2-83492084", 1, nodeProduct_83492084);
+//        Set<ViewRelationship> viewedRelationShipUser2 = new HashSet<>(Arrays.asList(viewed_user2_74489817, viewed_user2_83492084));
+//
+//        NodeUser user02 = new NodeUser(2, "ngoclt2", false, viewedRelationShipUser2);
+//        userNeo4jRepo.save(user02);
     }
 }

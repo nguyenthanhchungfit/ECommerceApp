@@ -51,7 +51,7 @@ public class AuthController {
             if (account != null && md5Hex.equals(account.getPassword())) {
                 long currentTime = System.currentTimeMillis();
                 long expiredTime = currentTime + EXPIRED_TIME;
-                UserSession us = new UserSession(currentTime, expiredTime, account.getUserId());
+                UserSession us = new UserSession(currentTime, expiredTime, Integer.valueOf(account.getUserId()));
                 UserSession retUs = sessionRepo.save(us);
                 if (retUs != null) {
                     String sessionId = retUs.getId();

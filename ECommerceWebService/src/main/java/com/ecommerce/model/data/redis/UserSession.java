@@ -26,19 +26,19 @@ public class UserSession {
 
     private long createTime;
     private long expiredTime;
-    private String userId;
+    private int userId;
 
     public UserSession() {
     }
     
-    public UserSession(String id, long createTime, long expiredTime, String userId) {
+    public UserSession(String id, long createTime, long expiredTime, int userId) {
         this.id = id;
         this.createTime = createTime;
         this.expiredTime = expiredTime;
         this.userId = userId;
     }
 
-    public UserSession(long createTime, long expiredTime, String userId) {
+    public UserSession(long createTime, long expiredTime, int userId) {
         this.createTime = createTime;
         this.expiredTime = expiredTime;
         this.userId = userId;
