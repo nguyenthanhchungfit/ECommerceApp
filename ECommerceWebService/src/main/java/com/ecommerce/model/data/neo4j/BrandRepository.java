@@ -11,6 +11,6 @@ import org.springframework.data.neo4j.repository.Neo4jRepository;
  *
  * @author chungnt
  */
-public interface BrandRepository extends Neo4jRepository<NodeBrand, Long>{
+public interface BrandRepository extends Neo4jRepository<NodeBrand, String>{
     
 }

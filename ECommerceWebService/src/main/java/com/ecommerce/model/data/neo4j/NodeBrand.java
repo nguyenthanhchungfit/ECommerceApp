@@ -8,6 +8,7 @@ package com.ecommerce.model.data.neo4j;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
@@ -23,9 +24,6 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 public class NodeBrand {
 
     @Id
-    @GeneratedValue
-    private Long id;
-
     private String name;
 
     @Relationship(type = "BELONG_TO", direction = Relationship.Direction.INCOMING)
@@ -35,11 +33,14 @@ public class NodeBrand {
     }
 
     public NodeBrand(String name) {
+        assert (StringUtils.isNotBlank(name));
         this.name = name;
+//        this.id = this.name.hashCode();
     }
 
+    // "id=" + id + 
     @Override
     public String toString() {
-        return "NodeBrand{" + "id=" + id + ", name=" + name + ", products=" + products + '}';
+        return "NodeBrand{" + "name=" + name + ", products=" + products + '}';
     }
 }
