@@ -6,6 +6,7 @@
 package com.ecommerce.model.data.neo4j;
 
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,25 +18,50 @@ import org.springframework.data.neo4j.core.schema.Relationship;
  *
  * @author chungnt
  */
-@Node
+@Node("User")
 @Getter
 @Setter
 public class NodeUser {
 
     @Id
-    private String _id;
+    private int id;
     private String userName;
 
     @Relationship(type = "BUY")
-    private List<NodeProduct> products;
+    private Set<NodeProduct> boughtProducts;
+
+    @Relationship(type = "VIEW")
+    private Set<ViewRelationship> viewedProducts;
 
     public NodeUser() {
     }
 
-    public NodeUser(String _id, String userName, List<NodeProduct> products) {
-        this._id = _id;
+    public NodeUser(int id, String userName) {
+        this.id = id;
         this.userName = userName;
-        this.products = products;
     }
 
+    public NodeUser(int id, String userName, Set<NodeProduct> boughtProducts) {
+        this.id = id;
+        this.userName = userName;
+        this.boughtProducts = boughtProducts;
+    }
+
+    public NodeUser(int id, String userName, boolean flag, Set<ViewRelationship> viewedProducts) {
+        this.id = id;
+        this.userName = userName;
+        this.viewedProducts = viewedProducts;
+    }
+
+    public NodeUser(int id, String userName, Set<NodeProduct> boughtProducts, Set<ViewRelationship> viewedProducts) {
+        this.id = id;
+        this.userName = userName;
+        this.boughtProducts = boughtProducts;
+        this.viewedProducts = viewedProducts;
+    }
+
+    @Override
+    public String toString() {
+        return "NodeUser{" + "id=" + id + ", userName=" + userName + ", boughtProducts=" + boughtProducts + ", viewedProducts=" + viewedProducts + '}';
+    }
 }

@@ -17,7 +17,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
  *
  * @author chungnt
  */
-@Node
+@Node("Brand")
 @Getter
 @Setter
 public class NodeBrand {
@@ -30,7 +30,7 @@ public class NodeBrand {
 
     @Relationship(type = "BELONG_TO", direction = Relationship.Direction.INCOMING)
     private List<NodeProduct> products;
-    
+
     public NodeBrand() {
     }
 
@@ -38,7 +38,8 @@ public class NodeBrand {
         this.name = name;
     }
 
-    
-    
-
+    @Override
+    public String toString() {
+        return "NodeBrand{" + "id=" + id + ", name=" + name + ", products=" + products + '}';
+    }
 }

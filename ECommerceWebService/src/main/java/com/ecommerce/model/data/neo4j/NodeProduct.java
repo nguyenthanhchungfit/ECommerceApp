@@ -17,7 +17,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
  *
  * @author chungnt
  */
-@Node
+@Node("Product")
 @Getter
 @Setter
 public class NodeProduct {
@@ -45,6 +45,9 @@ public class NodeProduct {
         this.category = category;
         this.brand = brand;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "NodeProduct{" + "productId=" + productId + ", rating=" + rating + ", users=" + users + ", category=" + category + ", brand=" + brand + '}';
+    }
 }
