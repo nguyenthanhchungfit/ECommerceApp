@@ -18,7 +18,7 @@ const ViewProduct = () => {
 
   const { addToBasket, isItemOnBasket } = useBasket(id);
   useScrollTop();
-  useDocumentTitle(`View Item}`);
+  useDocumentTitle(`Product Detail`);
 
   const [selectedImage, setSelectedImage] = useState("");
   const [selectedColor, setSelectedColor] = useState("");

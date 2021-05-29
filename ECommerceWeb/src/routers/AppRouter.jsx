@@ -29,6 +29,9 @@ const AppRouter = () => (
         <Route exact path={ROUTES.ELECTRICAL}>
           <view.ProductList category={1882}></view.ProductList>
         </Route>
+        <Route exact path={ROUTES.RECOMMENDED_PRODUCTS}>
+          <view.RecommendProduct/>
+        </Route>
 
         <Route component={view.ViewProduct} path={ROUTES.VIEW_PRODUCT} />
         <PublicRoute component={view.SignUp} path={ROUTES.SIGNUP} />
