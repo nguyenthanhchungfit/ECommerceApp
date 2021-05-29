@@ -1,7 +1,9 @@
 package com.ecommerce.repository.mysql;
 
+import com.ecommerce.model.data.mysql.Category;
 import com.ecommerce.model.data.mysql.OrderItem;
 import com.ecommerce.model.data.mysql.Product;
+import com.ecommerce.model.data.mysql.ProductCategory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,6 +35,8 @@ public class MySQLAdapter {
     private static final String COL_PRODUCT_PRICE = "price";
     private static final String COL_PRODUCT_THUMB_URL = "thumb_url";
     private static final String COL_PRODUCT_QUANTITY = "remain_quantity";
+    private static final String COL_PRODUCT_RATING_AVG = "ratingAvg";
+    private static final String COL_CATEGORY_NAME = "category_name";
 
     private static final String COL_ORDER_ID = "invoice_id";
     private static final String COL_ORDER_USER_ID = "user_id";
@@ -68,11 +72,11 @@ public class MySQLAdapter {
         }
     }
 
-    public boolean insertProduct(long id, String name, int categoryId, String brandName, String shortDescription, long price, String thumbUrl, int remainQuantity) {
+    public boolean insertProduct(long id, String name, int categoryId, String brandName, String shortDescription, long price, String thumbUrl, int remainQuantity, double ratingAvg) {
         Connection conn = null;
         try {
             conn = MYSQL_CLIENT.getConnection();
-            String sqlQuery = "insert into Product (product_id,product_name, category_id, brand_name, short_description, price, thumb_url, remain_quantity) values (?,?,?,?,?,?,?,?)";
+            String sqlQuery = "insert into Product (product_id,product_name, category_id, brand_name, short_description, price, thumb_url, remain_quantity, ratingAvg) values (?,?,?,?,?,?,?,?,?)";
 
             PreparedStatement prepareStatement = conn.prepareStatement(sqlQuery);
             prepareStatement.setLong(1, id);
@@ -83,6 +87,7 @@ public class MySQLAdapter {
             prepareStatement.setLong(6, price);
             prepareStatement.setString(7, thumbUrl);
             prepareStatement.setInt(8, remainQuantity);
+            prepareStatement.setDouble(9, ratingAvg);
             int result = prepareStatement.executeUpdate();
             return result > 0;
         } catch (SQLException e) {
@@ -98,7 +103,7 @@ public class MySQLAdapter {
         Connection conn = null;
         try {
             conn = MYSQL_CLIENT.getConnection();
-            String sqlQuery = "insert into Product (product_id,product_name, category_id, brand_name, short_description, price, thumb_url, remain_quantity) values (?,?,?,?,?,?,?,?)";
+            String sqlQuery = "insert into Product (product_id,product_name, category_id, brand_name, short_description, price, thumb_url, remain_quantity, ratingAvg) values (?,?,?,?,?,?,?,?,?)";
             PreparedStatement pstm = conn.prepareStatement(sqlQuery);
             pstm.setLong(1, product.getId());
             pstm.setString(2, product.getName());
@@ -108,6 +113,7 @@ public class MySQLAdapter {
             pstm.setLong(6, product.getPrice());
             pstm.setString(7, product.getThumbUrl());
             pstm.setInt(8, product.getRemainQuantity());
+            pstm.setDouble(9, product.getRatingAvg());
             ret = pstm.executeUpdate();
         } catch (SQLException ex) {
             logger.error(ex.getMessage(), ex);
@@ -122,7 +128,7 @@ public class MySQLAdapter {
         try {
             conn = MYSQL_CLIENT.getConnection();
             conn.setAutoCommit(false);
-            String sqlQuery = "insert into Product (product_id,product_name, category_id, brand_name, short_description, price, thumb_url, remain_quantity) values (?,?,?,?,?,?,?,?)";
+            String sqlQuery = "insert into Product (product_id,product_name, category_id, brand_name, short_description, price, thumb_url, remain_quantity, ratingAvg) values (?,?,?,?,?,?,?,?,?)";
             PreparedStatement pstm = conn.prepareStatement(sqlQuery);
             for (Product product : products) {
                 pstm.setLong(1, product.getId());
@@ -133,6 +139,7 @@ public class MySQLAdapter {
                 pstm.setLong(6, product.getPrice());
                 pstm.setString(7, product.getThumbUrl());
                 pstm.setInt(8, product.getRemainQuantity());
+                pstm.setDouble(9, product.getRatingAvg());
                 pstm.addBatch();
             }
             int[] insertRet = pstm.executeBatch();
@@ -199,6 +206,27 @@ public class MySQLAdapter {
             ResultSet resultSet = prepareStatement.executeQuery();
             List<Product> listVerificationInfo = extractListProduct(resultSet);
             return listVerificationInfo;
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            MYSQL_CLIENT.releaseConnection(conn);
+        }
+        return null;
+    }
+
+    public List<ProductCategory> getListProductCategory(int page, int nItems) {
+        Connection conn = null;
+        try {
+            conn = MYSQL_CLIENT.getConnection();
+            String sqlQuery = "select pd.*, ct.category_name from Product as pd\n"
+                + "INNER JOIN Category as ct on pd.category_id = ct.category_id limit ?,?;";
+
+            PreparedStatement pstm = conn.prepareStatement(sqlQuery);
+            pstm.setInt(1, (page - 1) * nItems);
+            pstm.setInt(2, nItems);
+            ResultSet resultSet = pstm.executeQuery();
+            List<ProductCategory> listProductCategory = extractListProductCategory(resultSet);
+            return listProductCategory;
         } catch (SQLException e) {
             logger.error(e);
         } finally {
@@ -334,7 +362,34 @@ public class MySQLAdapter {
                     long price = resultSet.getLong(COL_PRODUCT_PRICE);
                     String thumbUrl = resultSet.getString(COL_PRODUCT_THUMB_URL);
                     int quantity = resultSet.getInt(COL_PRODUCT_QUANTITY);
-                    ret.add(new Product(id, name, categoryId, brandName, shortDesc, price, thumbUrl, quantity));
+                    double ratingAvg = resultSet.getDouble(COL_PRODUCT_RATING_AVG);
+                    ret.add(new Product(id, name, categoryId, brandName, shortDesc, price, thumbUrl, quantity, ratingAvg));
+                }
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return ret;
+    }
+
+    public List<ProductCategory> extractListProductCategory(ResultSet resultSet) {
+        List<ProductCategory> ret = new ArrayList<>();
+        try {
+            if (resultSet != null) {
+                while (resultSet.next()) {
+                    long id = resultSet.getLong(COL_PRODUCT_ID);
+                    String name = resultSet.getString(COL_PRODUCT_NAME);
+                    int categoryId = resultSet.getInt(COL_PRODUCT_CATEGORY);
+                    String brandName = resultSet.getString(COL_PRODUCT_BRAND_NAME);
+                    String shortDesc = resultSet.getString(COL_PRODUCT_SHORT_DESC);
+                    long price = resultSet.getLong(COL_PRODUCT_PRICE);
+                    String thumbUrl = resultSet.getString(COL_PRODUCT_THUMB_URL);
+                    int quantity = resultSet.getInt(COL_PRODUCT_QUANTITY);
+                    double ratingAvg = resultSet.getDouble(COL_PRODUCT_RATING_AVG);
+                    String categoryName = resultSet.getString(COL_CATEGORY_NAME);
+                    Product product = new Product(id, name, categoryId, brandName, shortDesc, price, thumbUrl, quantity, ratingAvg);
+                    Category category = new Category(categoryId, categoryName);
+                    ret.add(new ProductCategory(product, category));
                 }
             }
         } catch (SQLException e) {

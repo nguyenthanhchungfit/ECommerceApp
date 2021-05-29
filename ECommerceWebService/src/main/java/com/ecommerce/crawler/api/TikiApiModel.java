@@ -20,14 +20,14 @@ import org.springframework.web.client.RestTemplate;
  * @author ngoclt2
  */
 public class TikiApiModel {
-
+    
     private static final Logger logger = LogManager.getLogger(TikiApiModel.class);
     private static final String TIKI_PRODUCT_API_URL = "https://tiki.vn/api/v2/products?limit=50";
     private static final int CATEGORY_LAPTOP = 8095;
     private static final int CATEGORY_MOBILE = 1789;
     private static final int CATEGORY_ELECTRICAL = 1882;
     public static TikiApiModel INSTANCE = new TikiApiModel();
-
+    
     public List<TikiProduct> getListTikiProduct(int categoryId) {
         if (categoryId <= 0) {
             return null;
@@ -40,7 +40,7 @@ public class TikiApiModel {
         }
         return null;
     }
-
+    
     public List<TikiProduct> getListTikiProductByUrl(String url) {
         RestTemplate restTemplate = new RestTemplate();
         TikiProductResponse response = restTemplate.getForObject(url, TikiProductResponse.class);
@@ -49,28 +49,35 @@ public class TikiApiModel {
         }
         return null;
     }
-
+    
     public void insertLaptop() {
-
+        
         List<TikiProduct> listTikiProduct = INSTANCE.getListTikiProduct(CATEGORY_LAPTOP);
-        for (TikiProduct product : listTikiProduct) {
-            long id = product.getId();
-            String name = product.getName();
-            int cateId = CATEGORY_LAPTOP;
-            String brandName = product.getBrandName();
-            String desc = product.getShortDescription();
-            long price = product.getPrice();
-            String thumbUrl = product.getThumbUrl();
-            int quantity = 100;
+        for (TikiProduct tikiProduct : listTikiProduct) {
+            Product product = TikiProduct.toProductEntity(tikiProduct);
+            product.setCategory(CATEGORY_LAPTOP);
             try {
-                boolean insertProduct = MySQLAdapter.INSTANCE.insertProduct(id, name, cateId, brandName, desc, price, thumbUrl, quantity);
+                MySQLAdapter.INSTANCE.insertProduct(product);
             } catch (Exception ex) {
                 logger.error(ex.getMessage(), ex);
             }
         }
-
+        
     }
-
+    
+    public void insertWithCategory(int category) {
+        List<TikiProduct> listTikiProduct = INSTANCE.getListTikiProduct(category);
+        for (TikiProduct tikiProduct : listTikiProduct) {
+            Product product = TikiProduct.toProductEntity(tikiProduct);
+            product.setCategory(category);
+            try {
+                MySQLAdapter.INSTANCE.insertProduct(product);
+            } catch (Exception ex) {
+                logger.error(ex.getMessage(), ex);
+            }
+        }
+    }
+    
     public List<Product> getALlProduct(String baseUrl, int page, int nItemPerPages) {
         List<Product> allProducts = new ArrayList<>();
         int offset = 0;
@@ -98,7 +105,7 @@ public class TikiApiModel {
         } while (isMore);
         return allProducts;
     }
-
+    
     public Map<Long, Product> getMapProducts(String baseUrl, int page, int nItemPerPages) {
         Map<Long, Product> mapProducts = new HashMap<>();
         int offset = 0;
@@ -128,10 +135,8 @@ public class TikiApiModel {
         } while (isMore);
         return mapProducts;
     }
-
-    public static void main(String[] args) {
-//        INSTANCE.insertLaptop();
-
+    
+    public void benchMark() {
         int maxPage = 200;
         int nItemPerPage = 50;
         String baseUrl = TIKI_PRODUCT_API_URL + "&offset=";
@@ -139,7 +144,7 @@ public class TikiApiModel {
         Map<Long, Product> mapProducts = INSTANCE.getMapProducts(baseUrl, maxPage, nItemPerPage);
         List<Product> allProducts = mapProducts.entrySet().stream().map(entry -> entry.getValue()).collect(Collectors.toList());
         System.out.println("sizeProduct: " + allProducts.size());
-
+        
         int countReq = 0;
 
         // test insert single
@@ -169,7 +174,7 @@ public class TikiApiModel {
                 batchProducts.clear();
             }
         }
-
+        
         if (!batchProducts.isEmpty()) {
             countReq++;
             // Insert to mysql
@@ -178,5 +183,11 @@ public class TikiApiModel {
         long endTime2 = System.currentTimeMillis();
         long duration2 = endTime2 - startTime2;
         System.out.println("totalTime: " + duration2 + ", countReq: " + countReq + ", avgReq: " + (duration2 / countReq));
+    }
+    
+    public static void main(String[] args) {
+//        INSTANCE.insertLaptop();
+        INSTANCE.insertWithCategory(CATEGORY_MOBILE);
+        
     }
 }

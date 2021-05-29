@@ -108,6 +108,7 @@ public class TikiProduct extends BaseModel {
         product.setPrice(tikiProduct.getPrice());
         product.setThumbUrl(tikiProduct.getThumbUrl());
         product.setRemainQuantity(1000);
+        product.setRatingAvg(tikiProduct.getRatingAverage());
         return product;
     }
 

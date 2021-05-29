@@ -17,8 +17,9 @@ public class Product {
     private long price;
     private String thumbUrl;
     private int remainQuantity;
+    private double ratingAvg;
 
-    public Product(long id, String name, int category, String brandName, String shortDescription, long price, String thumbUrl, int remainQuantity) {
+    public Product(long id, String name, int category, String brandName, String shortDescription, long price, String thumbUrl, int remainQuantity, double ratingAvg) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -27,6 +28,7 @@ public class Product {
         this.price = price;
         this.thumbUrl = thumbUrl;
         this.remainQuantity = remainQuantity;
+        this.ratingAvg = ratingAvg;
     }
 
     public Product() {
@@ -98,4 +100,16 @@ public class Product {
         this.remainQuantity = remainQuantity;
     }
 
+    public double getRatingAvg() {
+        return ratingAvg;
+    }
+
+    public void setRatingAvg(double ratingAvg) {
+        this.ratingAvg = ratingAvg;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" + "id=" + id + ", name=" + name + ", category=" + category + ", brandName=" + brandName + ", shortDescription=" + shortDescription + ", price=" + price + ", thumbUrl=" + thumbUrl + ", remainQuantity=" + remainQuantity + ", ratingAvg=" + ratingAvg + '}';
+    }
 }
