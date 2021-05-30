@@ -6,11 +6,11 @@ import { clearProfile } from "redux/actions/profileActions";
 import axios from "axios";
 
 function signIn(payload) {
-  return axios.post(`http://localhost:9000/api/login`, { params: payload });
+  return axios.get(`http://localhost:9000/api/login`, {params: payload});
 }
 
 function signUp(payload) {
-  return axios.post("http://localhost:9000/api/register", payload);
+  return axios.get("http://localhost:9000/api/register", {params: payload});
 }
 
 function* handleError(e) {
@@ -69,13 +69,13 @@ function* authSaga({ type, payload }) {
       try {
         yield initRequest();
         const response = yield call(signUp, payload);
-        if (response && response.error === 0) {
-          yield put(setAuthenticating(false));
+        yield put(setAuthenticating(false));
+        if (response && response.data.error === 0) {
           yield put(
             setAuthStatus({
-              success: false,
+              success: true,
               type: "auth",
-              isError: true,
+              isError: false,
               message: "Register successfully",
             })
           );

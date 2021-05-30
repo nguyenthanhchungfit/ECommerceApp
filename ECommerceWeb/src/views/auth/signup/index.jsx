@@ -50,7 +50,9 @@ const SignUp = ({ history }) => {
       date_of_birth: form.date_of_birth
     }));
   };
-
+  if (authStatus?.success) {
+    setTimeout(() => history.push(SIGNIN), 2000)
+  }
   return (
     <div className="auth-content">
       {authStatus?.success && (
