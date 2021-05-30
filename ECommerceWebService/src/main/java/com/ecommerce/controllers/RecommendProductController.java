@@ -8,21 +8,20 @@ package com.ecommerce.controllers;
 import com.ecommerce.common.Constant;
 import com.ecommerce.common.ErrorDefinition;
 import com.ecommerce.entities.RestResponseEntity;
-import com.ecommerce.model.data.neo4j.NodeProduct;
 import com.ecommerce.model.data.mysql.Product;
+import com.ecommerce.model.data.neo4j.NodeProduct;
+import com.ecommerce.model.data.neo4j.NodeUser;
 import com.ecommerce.model.data.neo4j.ProductRepository;
-import com.ecommerce.model.data.redis.UserSession;
+import com.ecommerce.model.data.neo4j.UserRepositoy;
 import com.ecommerce.model.data.redis.UserSessionRepository;
 import com.ecommerce.repository.mysql.MySQLAdapter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -34,6 +33,9 @@ public class RecommendProductController {
 
     @Autowired
     private UserSessionRepository sessionRepo;
+
+    @Autowired
+    private UserRepositoy userNeo4jRepo;
 
     @Autowired
     private ProductRepository productNeo4jRepo;
@@ -72,5 +74,18 @@ public class RecommendProductController {
             productResult = MySQLAdapter.INSTANCE.multiGetProducts(productIds);
         }
         return productResult;
+    }
+
+    @CrossOrigin
+    @GetMapping("/api/recommend/view")
+    public RestResponseEntity viewProduct(@RequestParam int userId, @RequestParam long productId) {
+        int error = ErrorDefinition.ERR_SUCCESS;
+        NodeUser nodeUser = null;
+        if (userId > 0 && productId > 0) {
+            nodeUser = userNeo4jRepo.viewProduct(userId, productId);
+
+        }
+        RestResponseEntity resp = new RestResponseEntity(error, nodeUser);
+        return resp;
     }
 }
