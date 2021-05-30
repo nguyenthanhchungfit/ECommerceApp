@@ -1,17 +1,12 @@
-import {
-  ON_AUTHSTATE_FAIL,
-  SIGNIN,
-} from "constants/constants";
+import { ON_AUTHSTATE_FAIL, SIGNIN } from "constants/constants";
 import { call, put } from "redux-saga/effects";
 import { signInSuccess, signOutSuccess } from "redux/actions/authActions";
 import { setAuthenticating, setAuthStatus } from "redux/actions/miscActions";
 import { clearProfile } from "redux/actions/profileActions";
 import axios from "axios";
 
-function signIn(email, password) {
-  return axios.get(
-    `http://localhost:9000/user?email=${email}&password=${password}`
-  );
+function signIn(payload) {
+  return axios.get(`http://localhost:9000/user`, { params: payload });
 }
 
 function* handleError(e) {
@@ -50,8 +45,8 @@ function* authSaga({ type, payload }) {
     case SIGNIN:
       try {
         yield initRequest();
-        const response = yield call(signIn, payload.email, payload.password);
-        if (response &&response.data) {
+        const response = yield call(signIn, payload);
+        if (response && response.data) {
           const user = response.data;
           yield put(
             signInSuccess({

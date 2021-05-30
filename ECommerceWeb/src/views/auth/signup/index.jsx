@@ -1,5 +1,5 @@
 import { ArrowRightOutlined, LoadingOutlined } from '@ant-design/icons';
-import { CustomInput } from 'components/formik';
+import { CustomInput, CustomDatePicker } from 'components/formik';
 import { SIGNIN } from 'constants/routes';
 import { Field, Form, Formik } from 'formik';
 import { useDocumentTitle, useScrollTop } from 'hooks';
@@ -44,7 +44,10 @@ const SignUp = ({ history }) => {
     dispatch(signUp({
       fullname: form.fullname.trim(),
       email: form.email.trim().toLowerCase(),
-      password: form.password.trim()
+      password: form.password.trim(),
+      account: form.account.trim(),
+      address: form.address.trim(),
+      date_of_birth: form.date_of_birth
     }));
   };
 
@@ -72,7 +75,10 @@ const SignUp = ({ history }) => {
                 initialValues={{
                   fullname: '',
                   email: '',
-                  password: ''
+                  password: '',
+                  account: '',
+                  address: '',
+                  date_of_birth: ''
                 }}
                 validateOnChange
                 validationSchema={SignInSchema}
@@ -98,6 +104,34 @@ const SignUp = ({ history }) => {
                         type="email"
                         label="* Email"
                         placeholder="test@example.com"
+                        component={CustomInput}
+                      />
+                    </div>
+                    <div className="auth-field">
+                      <Field
+                        disabled={isAuthenticating}
+                        name="address"
+                        type="text"
+                        label="* Address"
+                        placeholder="3 "
+                        component={CustomInput}
+                      />
+                    </div>
+                    <div className="auth-field">
+                      <Field 
+                        name="date_of_birth"
+                        label="* Birthday"
+                        component={CustomDatePicker}
+                        dateFormat="dd/MM/yyyy"
+                      />
+                    </div>
+                    <div className="auth-field">
+                      <Field
+                        disabled={isAuthenticating}
+                        name="account"
+                        type="text"
+                        label="* Account"
+                        placeholder="test"
                         component={CustomInput}
                       />
                     </div>
