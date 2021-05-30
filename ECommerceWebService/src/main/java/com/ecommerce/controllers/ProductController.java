@@ -7,6 +7,7 @@ import com.ecommerce.entities.RestResponseEntity;
 import com.ecommerce.model.data.mysql.Product;
 import com.ecommerce.repository.mysql.MySQLAdapter;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,10 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProductController {
 
+    @Autowired
+    private com.ecommerce.model.data.neo4j.RankingProductRecommendModel rankingNeo4j;
+
     @CrossOrigin
     @GetMapping(value = "/api/products")
     public RestResponseEntity getProductById(@RequestParam(name = "category", required = false) Integer categoryId,
-            @RequestParam(name = "page", defaultValue = "0") int page) {
+        @RequestParam(name = "page", defaultValue = "0") int page) {
         if (page <= 0) {
             page = 1;
         }
@@ -47,10 +51,14 @@ public class ProductController {
     @GetMapping("/api/products/{productId}")
     public RestResponseEntity getDetailProduct(@PathVariable long productId) {
         int error = ErrorDefinition.ERR_SUCCESS;
+        int userId = 1;
         Object data = null;
         if (productId > 0) {
             Product product = MySQLAdapter.INSTANCE.getProductById(productId);
             data = product;
+            if (product != null) {
+                rankingNeo4j.rankingCountViewProduct(userId, productId);
+            }
         } else {
             error = ErrorDefinition.ERR_INVALID_PARAM;
         }

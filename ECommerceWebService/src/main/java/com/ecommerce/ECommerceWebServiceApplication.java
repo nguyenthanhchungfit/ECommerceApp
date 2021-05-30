@@ -1,15 +1,20 @@
 package com.ecommerce;
 
 import com.ecommerce.model.data.mysql.Product;
-import com.ecommerce.model.data.redis.UserSession;
-import com.ecommerce.model.data.redis.UserSessionRepository;
 import com.ecommerce.model.data.neo4j.*;
 import com.ecommerce.model.data.mysql.ProductCategory;
+import com.ecommerce.model.data.mongodb.entity.User;
 import com.ecommerce.repository.mysql.MySQLAdapter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -43,6 +48,11 @@ public class ECommerceWebServiceApplication {
     @Autowired
     private com.ecommerce.model.data.redis.UserSessionRepository sessionRepo;
 
+//    @Autowired
+//    private com.ecommerce.model.data.elasticsearch.EProductRepository eProductRepo;
+    @Autowired
+    private com.ecommerce.repository.mongodb.UserRespository userMongoRepo;
+
     public static void main(String[] args) {
         SpringApplication.run(ECommerceWebServiceApplication.class, args);
     }
@@ -50,16 +60,44 @@ public class ECommerceWebServiceApplication {
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
+//            _mockInsertMongoDBUser();
 //            _mockInsertProductNeo4j();
 //            _mockNeo4j();
-//            System.out.println("firstUser: " + firstUser);
-//            System.out.println("Let's inspect the beans provided by Spring Boot:");
-//            String[] beanNames = ctx.getBeanDefinitionNames();
-//            Arrays.sort(beanNames);
-//            for (String beanName : beanNames) {
-//                System.out.println(beanName);
-//            }
+//            userNeo4jRepo.viewProduct(1, 91612670l);
+            //            System.out.println("firstUser: " + firstUser);
+            //            System.out.println("Let's inspect the beans provided by Spring Boot:");
+            //            String[] beanNames = ctx.getBeanDefinitionNames();
+            //            Arrays.sort(beanNames);
+            //            for (String beanName : beanNames) {
+            //                System.out.println(beanName);
+            //            }
         };
+    }
+
+    private void _mockInsertMongoDBUser() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+        String dateStr1 = "19/06/1997";
+        Date date1 = null;
+        try {
+            date1 = formatter.parse(dateStr1);
+        } catch (ParseException ex) {
+            Logger.getLogger(ECommerceWebServiceApplication.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        User user01 = new User(1, "chungnt", "chungnt@vng.com.vn", date1, "chungnt", "123");
+        user01 = userMongoRepo.save(user01);
+        System.out.println("put: " + user01);
+
+        String dateStr2 = "20/02/1998";
+        Date date2 = null;
+        try {
+            date2 = formatter.parse(dateStr2);
+        } catch (ParseException ex) {
+            Logger.getLogger(ECommerceWebServiceApplication.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        User user02 = new User(2, "ngoclt", "ngoclt@vng.com.vn", date2, "ngoclt", "123");
+        user02 = userMongoRepo.save(user02);
+        System.out.println("put: " + user02);
     }
 
     private void _mockInsertProductNeo4j() {
@@ -100,9 +138,10 @@ public class ECommerceWebServiceApplication {
         NodeBrand brandOukitel = new NodeBrand("Oukitel");
         NodeBrand brandOEM = new NodeBrand("OEM");
 
-        NodeProduct nodeProduct_65492829 = new NodeProduct(65492829, 5, nodeCateMobile, brandOukitel);
-        NodeProduct nodeProduct_95994081 = new NodeProduct(95994081, 0, nodeCateElectrical, brandOEM);
-        Set<NodeProduct> boughtProductsUser1 = new HashSet<>(Arrays.asList(nodeProduct_65492829, nodeProduct_95994081));
+//        NodeProduct nodeProduct_65492829 = new NodeProduct(65492829, 5, nodeCateMobile, brandOukitel);
+//        NodeProduct nodeProduct_95994081 = new NodeProduct(95994081, 0, nodeCateElectrical, brandOEM);
+//        Set<NodeProduct> boughtProductsUser1 = new HashSet<>(Arrays.asList(nodeProduct_65492829, nodeProduct_95994081));
+        Set<NodeProduct> boughtProductsUser1 = null;
 
         NodeProduct nodeProduct_92072034 = new NodeProduct(92072034, 5, nodeCateLatop, brandLenovo);
         ViewRelationship viewed_user1_92072034 = new ViewRelationship("1-92072034", 2, nodeProduct_92072034);

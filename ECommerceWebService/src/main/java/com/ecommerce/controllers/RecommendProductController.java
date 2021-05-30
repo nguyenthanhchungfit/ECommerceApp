@@ -9,11 +9,14 @@ import com.ecommerce.common.Constant;
 import com.ecommerce.common.ErrorDefinition;
 import com.ecommerce.entities.RestResponseEntity;
 import com.ecommerce.model.data.mysql.Product;
+import com.ecommerce.model.data.neo4j.NodeBrand;
+import com.ecommerce.model.data.neo4j.NodeCategory;
 import com.ecommerce.model.data.neo4j.NodeProduct;
 import com.ecommerce.model.data.neo4j.NodeUser;
 import com.ecommerce.model.data.neo4j.ProductRepository;
 import com.ecommerce.model.data.neo4j.UserRepositoy;
 import com.ecommerce.model.data.redis.UserSessionRepository;
+import com.ecommerce.repository.mongodb.UserRespository;
 import com.ecommerce.repository.mysql.MySQLAdapter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +42,12 @@ public class RecommendProductController {
 
     @Autowired
     private ProductRepository productNeo4jRepo;
+
+    @Autowired
+    private UserRespository userMongoRepo;
+
+    @Autowired
+    private com.ecommerce.model.data.neo4j.RankingProductRecommendModel rankingNeo4j;
 
     @CrossOrigin
     @GetMapping("/api/recommend/product")
@@ -82,10 +91,11 @@ public class RecommendProductController {
         int error = ErrorDefinition.ERR_SUCCESS;
         NodeUser nodeUser = null;
         if (userId > 0 && productId > 0) {
-            nodeUser = userNeo4jRepo.viewProduct(userId, productId);
-
+//            nodeUser = userNeo4jRepo.viewProduct(userId, productId);
+            rankingNeo4j.rankingCountViewProduct(userId, productId);
         }
         RestResponseEntity resp = new RestResponseEntity(error, nodeUser);
         return resp;
     }
+
 }

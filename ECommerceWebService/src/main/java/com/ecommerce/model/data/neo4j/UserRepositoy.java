@@ -21,4 +21,6 @@ public interface UserRepositoy extends Neo4jRepository<NodeUser, Integer> {
         + "ON MATCH SET r.countViews = r.countViews + 1\n"
         + "RETURN u")
     public NodeUser viewProduct(@Param("userId") int userId, @Param("productId") long productId);
+    
+    public NodeUser getUserById(int id);
 }

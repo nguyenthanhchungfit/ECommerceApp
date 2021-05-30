@@ -25,4 +25,6 @@ public interface ProductRepository extends Neo4jRepository<NodeProduct, Long> {
         + "ORDER BY p1.rating DESC\n"
         + "LIMIT $nItems")
     public List<NodeProduct> getListRecommenedProducts(@Param("userId") int userId, @Param("nItems") int nItems);
+
+    public NodeProduct getProductByProductId(long productId);
 }

@@ -29,7 +29,8 @@ dependencies {
             'org.springframework.boot:spring-boot-starter-thymeleaf',
             'org.springframework.boot:spring-boot-starter-data-neo4j',
             'org.springframework.boot:spring-boot-starter-data-mongodb',
-            'org.springframework.boot:spring-boot-starter-data-redis'
+            'org.springframework.boot:spring-boot-starter-data-redis',
+            'org.springframework.boot:spring-boot-starter-data-elasticsearch'
     )
     implementation 'org.json:json:20171018'
     implementation group: 'redis.clients', name: 'jedis', version: '3.6.0'

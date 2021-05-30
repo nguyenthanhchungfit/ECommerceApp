@@ -243,12 +243,37 @@ public class MySQLAdapter {
         return sb.toString();
     }
 
+    public ProductCategory getProductCategory(long productId) {
+        Connection conn = null;
+        try {
+            conn = MYSQL_CLIENT.getConnection();
+            String sqlQuery = "select pd.*, ct.category_name from Product as pd\n"
+                + "INNER JOIN Category as ct on pd.category_id = ct.category_id"
+                + "WHERE pd.product_id = ?;";
+
+            PreparedStatement pstm = conn.prepareStatement(sqlQuery);
+            pstm.setLong(1, productId);
+            ResultSet resultSet = pstm.executeQuery();
+            List<ProductCategory> listProductCategory = extractListProductCategory(resultSet);
+            if (listProductCategory != null && !listProductCategory.isEmpty()) {
+                return listProductCategory.get(0);
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            MYSQL_CLIENT.releaseConnection(conn);
+        }
+        return null;
+    }
+
     public List<ProductCategory> getListProductCategory(int page, int nItems) {
         Connection conn = null;
         try {
             conn = MYSQL_CLIENT.getConnection();
             String sqlQuery = "select pd.*, ct.category_name from Product as pd\n"
-                    + "INNER JOIN Category as ct on pd.category_id = ct.category_id limit ?,?;";
+                + "INNER JOIN Category as ct on pd.category_id = ct.category_id limit ?,?;";
 
             PreparedStatement pstm = conn.prepareStatement(sqlQuery);
             pstm.setInt(1, (page - 1) * nItems);

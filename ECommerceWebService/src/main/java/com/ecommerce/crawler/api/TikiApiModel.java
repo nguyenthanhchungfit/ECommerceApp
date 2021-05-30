@@ -1,16 +1,21 @@
 package com.ecommerce.crawler.api;
 
+import com.ecommerce.common.FileUtils;
 import com.ecommerce.crawler.model.TikiProduct;
 import com.ecommerce.crawler.model.TikiProductResponse;
 import com.ecommerce.model.data.mysql.Product;
 import com.ecommerce.repository.mysql.MySQLAdapter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.client.RestTemplate;
@@ -148,17 +153,16 @@ public class TikiApiModel {
         int countReq = 0;
 
         // test insert single
-        long startTime = System.currentTimeMillis();
-        for (Product product : allProducts) {
-            countReq++;
-            MySQLAdapter.INSTANCE.insertProduct(product);
-        }
-        long endTime = System.currentTimeMillis();
-        long duration = endTime - startTime;
-        System.out.println("totalTime: " + duration + ", countReq: " + countReq + ", avgReq: " + (duration / countReq));
-        Scanner scanner = new Scanner(System.in);
-        scanner.nextInt();
-
+//        long startTime = System.currentTimeMillis();
+//        for (Product product : allProducts) {
+//            countReq++;
+//            MySQLAdapter.INSTANCE.insertProduct(product);
+//        }
+//        long endTime = System.currentTimeMillis();
+//        long duration = endTime - startTime;
+//        System.out.println("totalTime: " + duration + ", countReq: " + countReq + ", avgReq: " + (duration / countReq));
+//        Scanner scanner = new Scanner(System.in);
+//        scanner.nextInt();
         // test insert batch
         countReq = 0;
         int batchSize = 20;
@@ -185,9 +189,73 @@ public class TikiApiModel {
         System.out.println("totalTime: " + duration2 + ", countReq: " + countReq + ", avgReq: " + (duration2 / countReq));
     }
     
-    public static void main(String[] args) {
-//        INSTANCE.insertLaptop();
-        INSTANCE.insertWithCategory(CATEGORY_MOBILE);
+    public List<String> getRandomSearch() {
+        List<String> listSearch = new ArrayList<>();
+        int page = 1;
+        boolean isMore = true;
+        do {
+            List<Product> products = MySQLAdapter.INSTANCE.getAllProduct(page, 50);
+            if (products != null && !products.isEmpty()) {
+                for (Product product : products) {
+                    String name = product.getName();
+                    String[] tokenizers = name.split(" ");
+                    int length = tokenizers.length;
+                    String search = null;
+                    if (length >= 3) {
+                        int mid = length / 2;
+                        search = tokenizers[mid] + " " + tokenizers[mid + 1];
+                    } else if (length > 0) {
+                        search = tokenizers[length - 1];
+                    }
+                    if (StringUtils.isNotBlank(search)) {
+                        listSearch.add(search);
+                        System.out.println("search: " + search);
+                    } else {
+                        System.out.println("error: " + product.getName());
+                    }
+                }
+                page++;
+            } else {
+                isMore = false;
+            }
+        } while (isMore);
         
+        return listSearch;
+    }
+    
+    public void benchMarkSearchMySQL() {
+        String pathFileTest = "test-resource/list_search";
+        int page = 0;
+        int nItems = 10;
+        int totalProductsSearch = 0;
+        int totalEmptySearch = 0;
+        List<String> listSearch = FileUtils.readData(pathFileTest);
+        int nLoop = 50;
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < nLoop; i++) {
+            Collections.shuffle(listSearch);
+            for (String searchName : listSearch) {
+                List<Product> products = MySQLAdapter.INSTANCE.searchProducsByName(searchName, page, nItems);
+                if (products != null && !products.isEmpty()) {
+                    totalProductsSearch += products.size();
+                } else {
+                    System.out.println("error: " + searchName);
+                    totalEmptySearch++;
+                }
+            }
+        }
+        
+        long duration = System.currentTimeMillis() - start;
+        System.out.println("duration: " + duration + ", totalProductsSearch: " + totalProductsSearch + ", totalEmpty: " + totalEmptySearch);
+    }
+    
+    public static void main(String[] args) {
+        //        INSTANCE.insertLaptop();
+        INSTANCE.insertWithCategory(CATEGORY_LAPTOP);
+//        INSTANCE.benchMark();
+//        List<String> listSearch = INSTANCE.getRandomSearch();
+//        Collections.shuffle(listSearch);
+//        System.out.println("read: " + FileUtils.readData("test-resource/list_search"));
+//        INSTANCE.benchMarkSearchMySQL();
     }
 }
