@@ -1,4 +1,4 @@
-import { ON_AUTHSTATE_FAIL, SIGNIN } from "constants/constants";
+import { ON_AUTHSTATE_FAIL, SIGNIN, SIGNUP } from "constants/constants";
 import { call, put } from "redux-saga/effects";
 import { signInSuccess, signOutSuccess } from "redux/actions/authActions";
 import { setAuthenticating, setAuthStatus } from "redux/actions/miscActions";
@@ -7,6 +7,10 @@ import axios from "axios";
 
 function signIn(payload) {
   return axios.get(`http://localhost:9000/user`, { params: payload });
+}
+
+function signUp(payload) {
+  return axios.post("http://localhost:9000/api/register", payload);
 }
 
 function* handleError(e) {
@@ -61,6 +65,25 @@ function* authSaga({ type, payload }) {
       }
       break;
 
+    case SIGNUP:
+      try {
+        yield initRequest();
+        const response = yield call(signUp, payload);
+        if (response && response.error === 0) {
+          yield put(setAuthenticating(false));
+          yield put(
+            setAuthStatus({
+              success: false,
+              type: "auth",
+              isError: true,
+              message: "Register successfully",
+            })
+          );
+        }
+      } catch (e) {
+        yield handleError(e);
+      }
+      break;
     case ON_AUTHSTATE_FAIL: {
       yield put(clearProfile());
       yield put(signOutSuccess());
