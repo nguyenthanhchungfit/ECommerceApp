@@ -10,3 +10,4 @@ export { default as useQueryProductDetail } from "./useQueryProductDetail";
 export { default as useQueryUser } from "./useQueryUser";
 export { default as useMutationCheckout } from "./useMutationsCheckout";
 export { default as useQueryOrderHistory } from "./useQueryOrderHistory";
+export { default as useQuerySearchProducts } from "./useQuerySearchProducts";

@@ -6,8 +6,6 @@ import { useQueryProducts } from "hooks";
 
 const ProductCarousel = ({category}) => {
 
-  console.log(category)
-
   const { isLoading, data } = useQueryProducts(category, 1);
 
   return (

@@ -11,8 +11,6 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 const RecommendProduct = () => {
- 
-  useSelector((state) => {console.log("STATE: "+ JSON.stringify(state))});
 
   const userId = 1;
   const [state, setState] = useState({
@@ -35,7 +33,6 @@ const RecommendProduct = () => {
       currentPage: state.currentPage + 1,
     });
 
-    console.log(state);
   };
 
   const goPage = (n) => {

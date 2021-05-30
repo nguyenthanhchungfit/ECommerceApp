@@ -27,7 +27,6 @@ const ProductList = ({category}) => {
       currentPage: state.currentPage + 1,
     });
 
-    console.log(state);
   };
 
   const goPage = (n) => {

@@ -9,8 +9,6 @@ const findCategoryId = (category) => {
 
 const useQueryProducts = (category, productId) =>
   useQuery(["product", category, productId], async () => {
-    console.log('categoryaa: ', category);
-    console.log('productId: ', productId);
     return axios.get(
       `http://localhost:9000/api/products/${productId}`
     );

@@ -248,7 +248,7 @@ public class MySQLAdapter {
         try {
             conn = MYSQL_CLIENT.getConnection();
             String sqlQuery = "select pd.*, ct.category_name from Product as pd\n"
-                + "INNER JOIN Category as ct on pd.category_id = ct.category_id limit ?,?;";
+                    + "INNER JOIN Category as ct on pd.category_id = ct.category_id limit ?,?;";
 
             PreparedStatement pstm = conn.prepareStatement(sqlQuery);
             pstm.setInt(1, (page - 1) * nItems);
@@ -293,6 +293,26 @@ public class MySQLAdapter {
             pstm.setString(1, "%" + ssearch + "%");
             pstm.setInt(2, page);
             pstm.setInt(3, nItems);
+
+            ResultSet resultSet = pstm.executeQuery();
+            List<Product> listVerificationInfo = extractListProduct(resultSet);
+            return listVerificationInfo;
+        } catch (SQLException e) {
+            logger.error(e);
+        } finally {
+            MYSQL_CLIENT.releaseConnection(conn);
+        }
+        return null;
+    }
+
+    public List<Product> searchProducsByName(String ssearch) {
+        Connection conn = null;
+        try {
+            conn = MYSQL_CLIENT.getConnection();
+            String sqlQuery = "select * from Product where product_name like ? ";
+
+            PreparedStatement pstm = conn.prepareStatement(sqlQuery);
+            pstm.setString(1, "%" + ssearch + "%");
 
             ResultSet resultSet = pstm.executeQuery();
             List<Product> listVerificationInfo = extractListProduct(resultSet);

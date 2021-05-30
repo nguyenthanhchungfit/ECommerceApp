@@ -1,4 +1,5 @@
 import { ImageLoader } from 'components/common';
+import { displayMoney } from 'helpers/utils';
 import PropType from 'prop-types';
 import React from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
@@ -25,7 +26,11 @@ const ProductFeatured = ({ product }) => {
 
   return (
     <SkeletonTheme color="#e1e1e1" highlightColor="#f2f2f2">
-      <div className="product-display" onClick={onClickItem} role="presentation">
+      <div
+        className="product-display"
+        onClick={onClickItem}
+        role="presentation"
+      >
         <div className="product-display-img">
           {product.thumbUrl ? (
             <ImageLoader
@@ -33,13 +38,18 @@ const ProductFeatured = ({ product }) => {
               className="product-card-img"
               src={product.thumbUrl}
             />
-          ) : <Skeleton width="100%" height="100%" />}
+          ) : (
+            <Skeleton width="100%" height="100%" />
+          )}
         </div>
         <div className="product-display-details">
           <h2>{product.name || <Skeleton width={80} />}</h2>
           <p className="text-subtle text-italic">
             {product.brandName || <Skeleton width={40} />}
           </p>
+          <h4 className="product-card-price">
+            {product.price && displayMoney(product.price)}
+          </h4>
         </div>
       </div>
     </SkeletonTheme>

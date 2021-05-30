@@ -26,15 +26,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class SearchProductController {
 
     @CrossOrigin
-    @GetMapping
+    @GetMapping("/api/search")
     public RestResponseEntity searchProducts(@RequestParam(name = "sseach") String ssearch,
-        @RequestParam(name = "page", defaultValue = "0") int page) {
+            @RequestParam(name = "page", defaultValue = "0") int page) {
         int error = ErrorDefinition.ERR_SUCCESS;
         Object data = null;
         if (StringUtils.isNotBlank(ssearch)) {
             // search product
             int total = MySQLAdapter.INSTANCE.getTotalOfProductsByName(ssearch);
-            List<Product> products = MySQLAdapter.INSTANCE.searchProducsByName(ssearch, page, Constant.NITEMS_PER_PAGE);
+            List<Product> products = MySQLAdapter.INSTANCE.searchProducsByName(ssearch);
             boolean isMore = products != null && products.size() == Constant.NITEMS_PER_PAGE;
             data = new ListProductResult(total, isMore, Constant.NITEMS_PER_PAGE, products);
         }

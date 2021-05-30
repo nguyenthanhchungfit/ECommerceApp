@@ -7,14 +7,8 @@ import { clearRecentSearch } from 'redux/actions/filterActions';
 
 const SearchBar = () => {
   const [searchInput, setSearchInput] = useState('');
-  const {isLoading } = useSelector((state) => ({
-    isLoading: state.app.loading
-  }));
   const searchbarRef = useRef(null);
   const history = useHistory();
-
-  const dispatch = useDispatch();
-  const isMobile = window.screen.width <= 800;
 
   const onSearchChange = (e) => {
     const val = e.target.value.trimStart();
@@ -23,40 +17,18 @@ const SearchBar = () => {
 
   const onKeyUp = (e) => {
     if (e.keyCode === 13) {
-      // dispatch(setTextFilter(searchInput));
       e.target.blur();
       searchbarRef.current.classList.remove('is-open-recent-search');
-
-      if (isMobile) {
-        history.push('/');
-      }
-
       history.push(`/search/${searchInput.trim().toLowerCase()}`);
     }
   };
 
   const recentSearchClickHandler = (e) => {
     const searchBar = e.target.closest('.searchbar');
-
     if (!searchBar) {
       searchbarRef.current.classList.remove('is-open-recent-search');
       document.removeEventListener('click', recentSearchClickHandler);
     }
-  };
-
-  const onFocusInput = (e) => {
-    e.target.select();
-
-  };
-
-  const onClickRecentSearch = (keyword) => {
-    // dispatch(setTextFilter(keyword));
-    searchbarRef.current.classList.remove('is-open-recent-search');
-    history.push(`/search/${keyword.trim().toLowerCase()}`);
-  };
-
-  const onClearRecent = () => {
-    dispatch(clearRecentSearch());
   };
 
   return (
@@ -67,9 +39,7 @@ const SearchBar = () => {
           className="search-input searchbar-input"
           onChange={onSearchChange}
           onKeyUp={onKeyUp}
-          onFocus={onFocusInput}
           placeholder="Search product..."
-          readOnly={isLoading}
           type="text"
           value={searchInput}
         />
