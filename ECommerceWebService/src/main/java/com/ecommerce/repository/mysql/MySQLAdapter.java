@@ -123,6 +123,24 @@ public class MySQLAdapter {
         return ret;
     }
 
+    public int insertCategory(Category category) {
+        int ret = -1;
+        Connection conn = null;
+        try {
+            conn = MYSQL_CLIENT.getConnection();
+            String sqlQuery = "insert into Category (category_id, category_name) values (?,?)";
+            PreparedStatement pstm = conn.prepareStatement(sqlQuery);
+            pstm.setInt(1, category.getCategoryId());
+            pstm.setString(2, category.getCategoryName());
+            ret = pstm.executeUpdate();
+        } catch (SQLException ex) {
+            logger.error(ex.getMessage(), ex);
+        } finally {
+            MYSQL_CLIENT.releaseConnection(conn);
+        }
+        return ret;
+    }
+
     public int[] insertMultiProducts(List<Product> products) {
         Connection conn = null;
         try {
