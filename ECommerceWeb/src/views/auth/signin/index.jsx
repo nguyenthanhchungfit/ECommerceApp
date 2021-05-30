@@ -12,9 +12,8 @@ import { setAuthenticating, setAuthStatus } from 'redux/actions/miscActions';
 import * as Yup from 'yup';
 
 const SignInSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Email is not valid.')
-    .required('Email is required.'),
+  account: Yup.string()
+    .required('Account is required.'),
   password: Yup.string()
     .required('Password is required.')
 });
@@ -38,7 +37,7 @@ const SignIn = ({ history }) => {
   const onSignUp = () => history.push(SIGNUP);
 
   const onSubmitForm = (form) => {
-    dispatch(signIn(form.email, form.password));
+    dispatch(signIn(form.account, form.password));
   };
 
   const onClickLink = (e) => {
@@ -69,7 +68,7 @@ const SignIn = ({ history }) => {
               <div className="auth-wrapper">
                 <Formik
                   initialValues={{
-                    email: '',
+                    account: '',
                     password: ''
                   }}
                   validateOnChange
@@ -81,10 +80,10 @@ const SignIn = ({ history }) => {
                       <div className="auth-field">
                         <Field
                           disabled={isAuthenticating}
-                          name="email"
-                          type="email"
-                          label="Email"
-                          placeholder="test@example.com"
+                          name="account"
+                          type="account"
+                          label="Account"
+                          placeholder="Your account"
                           component={CustomInput}
                         />
                       </div>
