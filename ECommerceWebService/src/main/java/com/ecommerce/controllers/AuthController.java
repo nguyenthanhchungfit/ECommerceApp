@@ -69,6 +69,7 @@ public class AuthController {
                     Cookie cookie = _createCookie(Constant.AUTH_ECOM_SESSION_KEY, sessionId, (int) (EXPIRED_TIME / 1000));
                     System.out.println("cookie: " + cookie);
                     response.addCookie(cookie);
+                    data = new AuthResult(user.getId(), user.getPassword());
                 } else {
                     error = ErrorDefinition.ERR_CREATE_SESSION_FAILED;
                 }

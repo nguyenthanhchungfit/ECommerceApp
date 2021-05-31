@@ -12,5 +12,5 @@ import org.springframework.data.repository.CrudRepository;
  * @author chungnt
  */
 public interface UserSessionRepository extends CrudRepository<UserSession, String> {
-    
+    public UserSession getSessionById(String id);
 }

@@ -6,8 +6,11 @@ import com.ecommerce.entities.ListProductResult;
 import com.ecommerce.entities.RestResponseEntity;
 import com.ecommerce.model.data.mysql.Product;
 import com.ecommerce.repository.mysql.MySQLAdapter;
+import com.ecommerce.model.data.redis.UserSession;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +26,9 @@ public class ProductController {
 
     @Autowired
     private com.ecommerce.model.data.neo4j.RankingProductRecommendModel rankingNeo4j;
+
+    @Autowired
+    private com.ecommerce.model.data.redis.UserSessionRepository sessionRedisRepo;
 
     @CrossOrigin
     @GetMapping(value = "/api/products")
@@ -49,14 +55,17 @@ public class ProductController {
 
     @CrossOrigin
     @GetMapping("/api/products/{productId}")
-    public RestResponseEntity getDetailProduct(@PathVariable long productId) {
+    public RestResponseEntity getDetailProduct(@CookieValue(value = Constant.AUTH_ECOM_SESSION_KEY, defaultValue = "") String sessionId,
+        @PathVariable long productId) {
         int error = ErrorDefinition.ERR_SUCCESS;
-        int userId = 1;
+
         Object data = null;
         if (productId > 0) {
             Product product = MySQLAdapter.INSTANCE.getProductById(productId);
             data = product;
-            if (product != null) {
+            Optional<UserSession> usOp = sessionRedisRepo.findById(sessionId);
+            if (product != null && usOp.isPresent()) {
+                int userId = usOp.get().getUserId();
                 rankingNeo4j.rankingCountViewProduct(userId, productId);
             }
         } else {
@@ -64,6 +73,8 @@ public class ProductController {
         }
         return new RestResponseEntity(error, data);
     }
+    // user-session:587fb158-885d-4811-bbb5-e542b2b6721f
+    // user-session:587fb158-885d-4811-bbb5-e542b2b6721f
 
     public static void main(String[] args) {
         Product product = MySQLAdapter.INSTANCE.getProduct(8095, 50247928);

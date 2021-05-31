@@ -15,5 +15,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AuthResult {
-    
+
+    private int id;
+    private String password;
+
+    public AuthResult() {
+    }
+
+    public AuthResult(int id, String password) {
+        this.id = id;
+        this.password = password;
+    }
 }
