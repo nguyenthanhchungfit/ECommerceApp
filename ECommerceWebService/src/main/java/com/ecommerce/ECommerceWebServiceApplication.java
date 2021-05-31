@@ -1,11 +1,11 @@
 package com.ecommerce;
 
 import com.ecommerce.crawler.api.TikiApiModel;
+import com.ecommerce.model.data.mongodb.entity.User;
 import com.ecommerce.model.data.mysql.Category;
 import com.ecommerce.model.data.mysql.Product;
-import com.ecommerce.model.data.neo4j.*;
 import com.ecommerce.model.data.mysql.ProductCategory;
-import com.ecommerce.model.data.mongodb.entity.User;
+import com.ecommerce.model.data.neo4j.*;
 import com.ecommerce.repository.mysql.MySQLAdapter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;

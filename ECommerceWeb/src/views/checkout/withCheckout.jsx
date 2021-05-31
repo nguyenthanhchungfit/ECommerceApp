@@ -14,9 +14,7 @@ const withCheckout = (Component) =>
     }));
 
     const subtotal = calculateTotal(
-      state.basket.map((product) => 
-        product.price * product.selectedSize
-      )
+      state.basket.map((product) => product.price * product.selectedSize)
     );
 
     if (!state.isAuth) {
