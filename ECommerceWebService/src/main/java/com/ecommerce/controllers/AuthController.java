@@ -22,6 +22,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,6 +58,7 @@ public class AuthController {
             //String md5Hex = DigestUtils.md5DigestAsHex(password.getBytes());
             User user = userRepo.getUserByAccount(userName);
             System.out.println("user: " + user);
+            password = DigestUtils.md5DigestAsHex(password.getBytes());
             if (user != null && password.equals(user.getPassword())) {
                 long currentTime = System.currentTimeMillis();
                 long expiredTime = currentTime + EXPIRED_TIME;

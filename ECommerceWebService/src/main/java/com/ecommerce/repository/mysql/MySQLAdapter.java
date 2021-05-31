@@ -373,9 +373,9 @@ public class MySQLAdapter {
         Connection conn = null;
         try {
             conn = MYSQL_CLIENT.getConnection();
-            String sqlQuery = "select count(*) as count from Product where product_name like %?%";
+            String sqlQuery = "select count(*) as count from Product where product_name like ?";
 
-            PreparedStatement pstm = conn.prepareStatement(sqlQuery);
+            PreparedStatement pstm = conn.prepareStatement("%" + sqlQuery + "%");
             pstm.setString(1, ssearch);
             ResultSet resultSet = pstm.executeQuery();
             total = extractCount(resultSet);

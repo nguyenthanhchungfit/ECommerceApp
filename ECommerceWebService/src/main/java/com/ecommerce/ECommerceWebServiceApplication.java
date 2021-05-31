@@ -5,7 +5,9 @@ import com.ecommerce.model.data.mongodb.entity.User;
 import com.ecommerce.model.data.mysql.Category;
 import com.ecommerce.model.data.mysql.Product;
 import com.ecommerce.model.data.mysql.ProductCategory;
+import com.ecommerce.model.data.mongodb.entity.User;
 import com.ecommerce.model.data.neo4j.*;
+import com.ecommerce.model.data.redis.UserSession;
 import com.ecommerce.repository.mysql.MySQLAdapter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,8 +57,6 @@ public class ECommerceWebServiceApplication {
     @Autowired
     private com.ecommerce.model.data.redis.UserSessionRepository sessionRepo;
 
-//    @Autowired
-//    private com.ecommerce.model.data.elasticsearch.EProductRepository eProductRepo;
     @Autowired
     private com.ecommerce.repository.mongodb.UserRespository userMongoRepo;
 
@@ -78,7 +79,14 @@ public class ECommerceWebServiceApplication {
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
-
+//            Optional<UserSession> us = sessionRepo.findById("0f59345d-986b-4544-85bc-3014290561a8");
+//            System.out.println("us: " + us);
+//            System.out.println("get: " + sessionRepo.getSessionById("user-session:6e8f6fc1-0911-49bb-8ae1-e2f30e5f2ee6"));
+//            UserSession us = new UserSession(System.currentTimeMillis(), System.currentTimeMillis() + 100000, 1);
+//            UserSession saveUs = sessionRepo.save(us);
+//            System.out.println("set: " + saveUs);
+//            String key = saveUs.getId();
+//            System.out.println("key:" + key + ",get: " + sessionRepo.getSessionById("user-session:" + key));
 //            _mockInsertMongoDBUser();
 //            _initDataForTest();
 //            _mockInsertMongoDBUser();
