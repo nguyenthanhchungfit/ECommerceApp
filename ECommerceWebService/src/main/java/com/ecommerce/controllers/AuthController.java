@@ -48,7 +48,6 @@ public class AuthController {
 
     private static final long EXPIRED_TIME = TimeUnit.DAYS.toMillis(7);// 7 days
 
-    @CrossOrigin
     @GetMapping("/api/login")
     public RestResponseEntity doLogin(HttpServletResponse response, @RequestParam(name = "account") String userName,
         @RequestParam(name = "password") String password) {

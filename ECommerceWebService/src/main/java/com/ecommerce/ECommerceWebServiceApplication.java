@@ -1,5 +1,7 @@
 package com.ecommerce;
 
+import com.ecommerce.crawler.api.TikiApiModel;
+import com.ecommerce.model.data.mysql.Category;
 import com.ecommerce.model.data.mysql.Product;
 import com.ecommerce.model.data.neo4j.*;
 import com.ecommerce.model.data.mysql.ProductCategory;
@@ -9,9 +11,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +32,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Component;
+import org.springframework.util.DigestUtils;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @Component
@@ -58,8 +65,23 @@ public class ECommerceWebServiceApplication {
     }
 
     @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                System.out.println("***** add configure cross origin **********");
+                // .allowedOrigins("*")
+                registry.addMapping("/**").allowCredentials(true).allowedOrigins("http://localhost:3000");
+            }
+        };
+    }
+
+    @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
+
+//            _mockInsertMongoDBUser();
+//            _initDataForTest();
 //            _mockInsertMongoDBUser();
 //            _mockInsertProductNeo4j();
 //            _mockNeo4j();
@@ -74,6 +96,32 @@ public class ECommerceWebServiceApplication {
         };
     }
 
+    private void _initDataForTest() {
+        Map<Integer, String> mapCategory = new HashMap<>();
+        mapCategory.put(1789, "dien-thoai-may-tinh-bang");
+        mapCategory.put(1882, "dien-gia-dung");
+        mapCategory.put(8095, "may-tinh");
+        // insert mysql
+        _initMysqlData(mapCategory);
+        // insert mongodb
+        _mockInsertMongoDBUser();
+        // insert neo4j
+        _mockInsertProductNeo4j();
+        _mockInsertNodeUserNeo4j();
+
+    }
+
+    private void _initMysqlData(Map<Integer, String> mapCategory) {
+        for (Map.Entry<Integer, String> entry : mapCategory.entrySet()) {
+            int categoryId = entry.getKey();
+            Category category = new Category(categoryId, entry.getValue());
+            int retCategory = MySQLAdapter.INSTANCE.insertCategory(category);
+            if (retCategory >= 0) {
+                TikiApiModel.INSTANCE.insertWithCategory(categoryId);
+            }
+        }
+    }
+
     private void _mockInsertMongoDBUser() {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -84,9 +132,9 @@ public class ECommerceWebServiceApplication {
         } catch (ParseException ex) {
             Logger.getLogger(ECommerceWebServiceApplication.class.getName()).log(Level.SEVERE, null, ex);
         }
-        User user01 = new User(1, "chungnt", "chungnt@vng.com.vn", date1, "chungnt", "123");
+        User user01 = new User(1, "chungnt", "chungnt@vng.com.vn", date1, "chungnt", DigestUtils.md5DigestAsHex("123".getBytes()), "HCM City");
         user01 = userMongoRepo.save(user01);
-        System.out.println("put: " + user01);
+        System.out.println("insert userMongo: " + user01);
 
         String dateStr2 = "20/02/1998";
         Date date2 = null;
@@ -95,9 +143,9 @@ public class ECommerceWebServiceApplication {
         } catch (ParseException ex) {
             Logger.getLogger(ECommerceWebServiceApplication.class.getName()).log(Level.SEVERE, null, ex);
         }
-        User user02 = new User(2, "ngoclt", "ngoclt@vng.com.vn", date2, "ngoclt", "123");
+        User user02 = new User(2, "ngoclt", "ngoclt@vng.com.vn", date2, "ngoclt", DigestUtils.md5DigestAsHex("123".getBytes()), "HCM City");
         user02 = userMongoRepo.save(user02);
-        System.out.println("put: " + user02);
+        System.out.println("insert userMongo: " + user02);
     }
 
     private void _mockInsertProductNeo4j() {
@@ -105,7 +153,6 @@ public class ECommerceWebServiceApplication {
         int nItem = 50;
         boolean isMore = true;
         do {
-            System.out.println("page: " + page);
             List<ProductCategory> listProductCategory = MySQLAdapter.INSTANCE.getListProductCategory(page, nItem);
             if (listProductCategory != null && !listProductCategory.isEmpty()) {
                 for (ProductCategory productCate : listProductCategory) {
@@ -121,6 +168,19 @@ public class ECommerceWebServiceApplication {
             }
         } while (isMore);
 
+    }
+
+    private void _mockInsertNodeUserNeo4j() {
+        List<User> users = userMongoRepo.findAll();
+        if (users != null && !users.isEmpty()) {
+            for (User user : users) {
+                NodeUser nodeUser = new NodeUser(user.getId(), user.getAccount());
+                nodeUser = userNeo4jRepo.save(nodeUser);
+                if (nodeUser != null) {
+                    System.out.println("Insert NodeUser Neo4j: " + nodeUser);
+                }
+            }
+        }
     }
 
     private void _mockNeo4j() {

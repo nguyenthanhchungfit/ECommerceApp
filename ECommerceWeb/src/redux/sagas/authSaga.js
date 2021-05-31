@@ -6,7 +6,7 @@ import { clearProfile } from "redux/actions/profileActions";
 import axios from "axios";
 
 function signIn(payload) {
-  return axios.get(`http://localhost:9000/api/login`, {params: payload});
+  return axios.get(`http://localhost:9000/api/login`, { params: payload , withCredentials: true});
 }
 
 function signUp(payload) {
