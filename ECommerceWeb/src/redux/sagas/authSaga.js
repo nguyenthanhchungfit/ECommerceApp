@@ -27,6 +27,10 @@ function signUp(payload) {
   return axios.get("http://localhost:9000/api/register", { params: payload });
 }
 
+function signOut() {
+  return axios.get("http://localhost:9000/api/logout");
+}
+
 function* handleError(e) {
   const obj = { success: false, type: "auth", isError: true };
   yield put(setAuthenticating(false));
@@ -108,6 +112,19 @@ function* authSaga({ type, payload }) {
               message: "Register successfully",
             })
           );
+        }
+      } catch (e) {
+        yield handleError(e);
+      }
+      break;
+    case SIGNOUT:
+      try {
+        yield initRequest();
+        const response = yield call(signOut);
+        yield put(setAuthenticating(false));
+        if (response && response.data.error === 0) {
+          yield put(clearProfile());
+          yield put(signOutSuccess());
         }
       } catch (e) {
         yield handleError(e);
