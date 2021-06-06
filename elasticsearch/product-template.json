@@ -1,0 +1,64 @@
+{
+  "ecommerce-webapp-template" : {
+    "order" : 10,
+    "index_patterns" : [
+      "ecommerce-webapp-*"
+    ],
+    "settings" : {
+      "index" : {
+        "lifecycle" : {
+          "rollover_alias" : "ecommerce-webapp"
+        },
+        "refresh_interval" : "5s",
+        "number_of_shards" : "1",
+        "number_of_replicas" : "1"
+      }
+    },
+    "mappings" : {
+      "properties" : {
+        "app.product.id" : {
+          "index" : true,
+          "type" : "long"
+        },
+        "app.product.name" : {
+          "eager_global_ordinals" : true,
+          "norms" : false,
+          "type" : "keyword"
+        },
+        "app.product.category.id" : {
+          "index" : false,
+          "type" : "integer"
+        },
+        "app.product.category.name" : {
+          "eager_global_ordinals" : true,
+          "norms" : false,
+          "type" : "keyword"
+        },
+        "app.product.brand_name" : {
+          "eager_global_ordinals" : true,
+          "norms" : false,
+          "type" : "keyword"
+        },
+        "app.product.description" : {
+          "type" : "keyword"
+        },
+        "app.product.price" : {
+          "index" : false,
+          "type" : "long"
+        },
+        "app.product.thumb" : {
+          "type" : "keyword"
+        },
+        "app.product.remain" : {
+          "index" : false,
+          "type" : "integer"
+        },
+        "app.product.avg-rating" : {
+          "index" : false,
+          "type" : "float"
+        }
+      }
+    },
+    "aliases" : { }
+  }
+}

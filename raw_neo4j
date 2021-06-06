@@ -1,0 +1,18 @@
+1-chungnt, 2-ngocl2, 3-khangpg
+
+NodeUser(1-chungnt) 
+    buy 
+        NodeProduct(85137414,5,NodeCategory(1789, "Mobile"), NodeBrand("Xiaomi"))
+        NodeProduct(16550144,5,NodeCategory(1882, "Electrical"), NodeBrand("Deerma"))
+
+    view
+        ViewRelationship("1-82482203", 2, NodeProduct(82482203,5,NodeCategory(8095, "Laptop"), NodeBrand("Asus")))
+        ViewRelationship("1-72761522", 1, NodeProduct(72761522,4.8,NodeCategory(8095, "Laptop"), NodeBrand("Lenovo")))
+        ViewRelationship("1-75321775", 1, NodeProduct(75321775,5,NodeCategory(1789, "Mobile"), NodeBrand("Samsung")))
+
+NodeUser(2-ngoclt2)
+    view
+        ViewRelationship("1-74489817", 3, NodeProduct(74489817,5,NodeCategory(1789, "Mobile"), NodeBrand("OPPO")))
+        ViewRelationship("1-83492084", 1, NodeProduct(83492084,5,NodeCategory(1789, "Mobile"), NodeBrand("Samsung")))
+
+
