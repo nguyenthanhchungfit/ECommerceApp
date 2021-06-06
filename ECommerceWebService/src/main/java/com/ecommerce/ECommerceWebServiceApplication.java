@@ -88,7 +88,7 @@ public class ECommerceWebServiceApplication {
 //            String key = saveUs.getId();
 //            System.out.println("key:" + key + ",get: " + sessionRepo.getSessionById("user-session:" + key));
 //            _mockInsertMongoDBUser();
-//            _initDataForTest();
+            _initDataForTest();
 //            _mockInsertMongoDBUser();
 //            _mockInsertProductNeo4j();
 //            _mockNeo4j();
